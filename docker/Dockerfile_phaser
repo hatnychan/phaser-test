@@ -1,0 +1,41 @@
+FROM ubuntu
+LABEL maintainer="@hatnychan"
+# RUN: buildするときに実行される
+RUN echo "now building..."
+RUN  apt update \
+  && apt install -y \
+     git \
+     unzip \
+     vim \
+     sudo \
+     iproute2 \
+     iputils-ping \
+     ssh \
+     nodejs \
+     npm 
+
+# aptだと古いnodejsとnpmしか入らないのでnで入れ直す
+RUN npm install n -g
+RUN n stable
+RUN apt purge -y nodejs npm
+
+RUN useradd -m user
+RUN chown -R user /home/user
+RUN echo 'user ALL=(ALL:ALL) ALL' >> /etc/sudoers
+RUN echo 'user:user' |chpasswd
+RUN echo 'root:root' |chpasswd
+
+# gitの設定
+ARG GIT_USER_NAME
+ARG GIT_USER_EMAIL
+RUN git config --global user.name "${GIT_USER_NAME}"
+RUN git config --global user.email "${GIT_USER_EMAIL}"
+
+# CMD: runするときに実行される
+# CMD echo "now running..."
+CMD ["echo" , "now running..."]
+CMD /etc/init.d/ssh start
+
+EXPOSE 80
+EXPOSE 8080
+EXPOSE 22

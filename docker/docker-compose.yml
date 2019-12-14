@@ -1,0 +1,40 @@
+version: "3"
+services:
+  db:
+    container_name: db
+    image:
+      postgres:11-alpine
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - ./initdb:/docker-entrypoint-initdb.d
+      - ./dbdata:/var/lib/postgresql/data
+    restart: always
+
+  phaser:
+    container_name: phaser
+    image: #repository名
+      hatnychan/phaser
+    build:
+      context: .
+      dockerfile: Dockerfile_phaser
+      args:
+        - GIT_USER_NAME=${GIT_USER_NAME}
+        - GIT_USER_EMAIL=${GIT_USER_EMAIL}
+    ports:
+      - "8080:8080"
+      - "8000:80"
+      - "8022:22"
+    tty: #-tに対応 
+      true
+    stdin_open: #-iに対応 
+      true
+    user: #rootとしてログイン(userとしてログインするとsshできない。。。)
+      root
+    command: 
+      bash -c "/etc/init.d/ssh start; bash;"
+    restart: always
