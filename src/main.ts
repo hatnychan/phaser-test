@@ -1,6 +1,16 @@
-// import * as phaser from 'phaser';
-import phaser = require('phaser');
-const message: string = 'Hello World';
+//import Phaser from 'phaser';
+// import Phaser = require('phaser')
+import * as Phaser from 'phaser'
 
-// sub.jsに定義されたJavaScriptを実行する。
-console.log(message);
+import { LoadScene } from './scenes/LoadScene'
+import { MenuScene } from './scenes/MenuScene'
+import { PlayScene } from './scenes/PlayScene'
+
+new Phaser.Game({
+  width: 800,
+  height: 600,
+  scene: [LoadScene, MenuScene, PlayScene],
+  render: {
+    pixelArt: true,
+  },
+})
