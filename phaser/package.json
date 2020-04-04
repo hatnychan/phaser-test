@@ -26,6 +26,7 @@
     "webpack-dev-server": "^3.9.0"
   },
   "dependencies": {
+    "axios": "^0.19.1",
     "phaser": "^3.21.0"
   },
   "husky": {
