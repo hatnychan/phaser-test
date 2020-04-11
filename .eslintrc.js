@@ -22,7 +22,7 @@ module.exports = {
       sourceType: "module"
     },
     rules: {
-      //Prettier の設定を記述していきます
+      //Prettier の設定を記述
       "prettier/prettier": [
         "error",
         {

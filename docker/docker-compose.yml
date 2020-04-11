@@ -38,3 +38,7 @@ services:
     command: 
       bash -c "/etc/init.d/ssh start; bash;"
     restart: always
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
