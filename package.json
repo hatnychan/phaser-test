@@ -6,7 +6,9 @@
     "build": "webpack",
     "start": "webpack-dev-server --content-base phaser/dist/",
     "lint": "eslint '*/**/*.{js,ts}' --quiet --fix",
-    "genMigration": "ts-node $(npm bin)/typeorm migration:generate -n Initialize"
+    "genMigration": "ts-node $(npm bin)/typeorm migration:generate -n Initialize",
+    "upMigration": "ts-node $(npm bin)/typeorm migration:run",
+    "downMigration": "ts-node $(npm bin)/typeorm migration:revert"
   },
   "author": "",
   "license": "ISC",

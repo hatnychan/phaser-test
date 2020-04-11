@@ -1,15 +1,15 @@
 version: "3"
 services:
-  db:
-    container_name: db
+  ${DB_HOST}:
+    container_name: ${DB_HOST}
     image:
       postgres:11-alpine
     ports:
-      - 5432:5432
+      - 5432:${DB_PORT}
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
     volumes:
       - ./initdb:/docker-entrypoint-initdb.d
       - ./dbdata:/var/lib/postgresql/data
@@ -29,16 +29,19 @@ services:
       - "8080:8080"
       - "8000:80"
       - "8022:22"
-    tty: #-tに対応 
+    tty: #-tに対応
       true
-    stdin_open: #-iに対応 
+    stdin_open: #-iに対応
       true
     user: #rootとしてログイン(userとしてログインするとsshできない。。。)
       root
-    command: 
+    command:
       bash -c "/etc/init.d/ssh start; bash;"
     restart: always
     environment:
-      - POSTGRES_USER=${POSTGRES_USER}
-      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
-      - POSTGRES_DB=${POSTGRES_DB}
+      - DB_TYPE=${DB_TYPE}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${PORT}
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_NAME}
