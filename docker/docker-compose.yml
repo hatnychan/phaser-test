@@ -1,14 +1,14 @@
 version: "3"
 services:
-  ${DB_HOST}:
-    container_name: ${DB_HOST}
+  db:
+    container_name: db
     image:
       postgres:11-alpine
     ports:
       - 5432:${DB_PORT}
     environment:
       - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_PASSWORD=${DB_PASS}
       - POSTGRES_DB=${DB_NAME}
     volumes:
       - ./initdb:/docker-entrypoint-initdb.d
@@ -29,19 +29,29 @@ services:
       - "8080:8080"
       - "8000:80"
       - "8022:22"
-    tty: #-tに対応
+    tty: #-tに対応 
       true
-    stdin_open: #-iに対応
+    stdin_open: #-iに対応 
       true
     user: #rootとしてログイン(userとしてログインするとsshできない。。。)
       root
-    command:
-      bash -c "/etc/init.d/ssh start; bash;"
-    restart: always
+    depends_on: #コンテナ立ち上げの起動順を制御する
+      - db
     environment:
+      - GIT_URL=${GIT_URL}
+      - GIT_PROJECT=${GIT_PROJECT}
       - DB_TYPE=${DB_TYPE}
       - DB_HOST=${DB_HOST}
-      - DB_PORT=${PORT}
+      - DB_PORT=${DB_PORT}
       - DB_USER=${DB_USER}
-      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_PASS=${DB_PASS}
       - DB_NAME=${DB_NAME}
+    command: >
+      bash -c "
+      git clone ${GIT_URL} /home/user/${GIT_PROJECT};
+      npm install --prefix=/home/user/${GIT_PROJECT};
+      npm run build --prefix=/home/user/${GIT_PROJECT};
+      npm run upMigration --prefix=/home/user/${GIT_PROJECT};
+      /etc/init.d/ssh start;
+      bash;"
+    restart: always
