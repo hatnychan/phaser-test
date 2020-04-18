@@ -1,16 +1,27 @@
-//import Phaser from 'phaser'
-// import Phaser = require('phaser')
 import * as Phaser from 'phaser'
+import axios, { AxiosResponse } from 'axios'
+import { NumParam } from './types/numParam.d'
 
 import { LoadScene } from './scenes/LoadScene'
 import { MenuScene } from './scenes/MenuScene'
 import { PlayScene } from './scenes/PlayScene'
 
-new Phaser.Game({
-    width: 800,
-    height: 600,
-    scene: [LoadScene, MenuScene, PlayScene],
-    render: {
-        pixelArt: true
-    }
+const SCREEN_SIZE = 'P0001'
+
+axios.get<NumParam[]>('/init').then((res: AxiosResponse<NumParam[]>): void => {
+    // システムパラメータ全取得
+    const param: NumParam[] = res.data
+
+    // スクリーンサイズパラメータ抽出
+    const scrnSizeParam: NumParam[] = param.filter(param => param.paramCd === SCREEN_SIZE)
+    const width: number = parseInt(scrnSizeParam[0].value)
+    const height: number = parseInt(scrnSizeParam[1].value)
+
+    // シーン描画
+    new Phaser.Game({
+        width: width,
+        height: height,
+        scene: [LoadScene, MenuScene, PlayScene],
+        render: { pixelArt: true }
+    })
 })

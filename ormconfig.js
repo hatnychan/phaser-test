@@ -8,6 +8,7 @@ module.exports = {
     // 注意" これがtrueだと、モデル定義を変更すると即DB反映されて危険。普通はmigrationファイルで世代管理すると思うのでfalseにします。
     synchronize: false,
     logging: false,
+    cache: true,
     entities: ['server/domain/models/**/*.ts'],
     migrations: ['migrations/**/*.ts'],
     cli: {
