@@ -8,7 +8,7 @@ import { PlayScene } from './scenes/PlayScene'
 
 const SCREEN_SIZE = 'P0001'
 
-axios.get<NumParam[]>('/init').then((res: AxiosResponse<NumParam[]>): void => {
+axios.get<NumParam[]>('/api/init').then((res: AxiosResponse<NumParam[]>): void => {
     // システムパラメータ全取得
     const param: NumParam[] = res.data
 

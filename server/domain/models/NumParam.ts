@@ -11,3 +11,4 @@ export class NumParam extends BaseEntity {
     @Column({ type: 'decimal', nullable: true })
     value?: number
 }
+export default NumParam
