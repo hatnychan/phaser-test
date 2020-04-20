@@ -3,8 +3,7 @@ import INumParamRepository from '../../application/repositories/INumParamReposit
 
 export class NumParamRepository extends INumParamRepository {
     async findAll(): Promise<NumParam[]> {
-        // const results: NumParam[] = await NumParam.find({ cache: true })
-        //cacheがtrueだとエラー発生。。。なんで！？
+        //キャッシュの情報はquery-result-cacheテーブルに保存される。でもDBに保存されるのはちょっと微妙かも
         const results: NumParam[] = await NumParam.find({ cache: true })
         return results
     }

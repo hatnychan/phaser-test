@@ -1,8 +1,7 @@
 import express from 'express'
 import http from 'http'
 import { getConnectionOptions, createConnection, BaseEntity, ConnectionOptions, Connection } from 'typeorm'
-//import router from './router'
-import { NumParam } from '../domain/models/NumParam'
+import router from './router'
 ;(async (): Promise<void> => {
     const app = express()
 
@@ -26,10 +25,5 @@ import { NumParam } from '../domain/models/NumParam'
     app.use('/', express.static('phaser/dist'))
 
     // APIRouter
-    // app.use('/api', router)
-
-    app.get('/api/init', async (req: express.Request, res: express.Response) => {
-        const numParam: NumParam[] = await NumParam.find({ cache: true })
-        res.send(numParam)
-    })
+    app.use('/api', router)
 })()

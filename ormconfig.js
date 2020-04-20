@@ -1,3 +1,4 @@
+// 編集したらnpm run genMigration → upMigrationすること
 module.exports = {
     type: process.env.DB_TYPE,
     host: process.env.DB_HOST, // 接続するDBホスト名
