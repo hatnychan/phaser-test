@@ -2,14 +2,14 @@ import express from 'express'
 import http from 'http'
 import { getConnectionOptions, createConnection, BaseEntity, ConnectionOptions, Connection } from 'typeorm'
 import router from './router'
-;(async (): Promise<void> => {
+
+const server = async (): Promise<void> => {
     const app = express()
 
     // http server
     /*実はhttpモジュールを使わなくてもapp.listen(port)でサーバーを起動することができる。
     ただ、socket.ioやHTTPS(実際はhttpsを使う)を利用を考えると、結局httpモジュールを使うことになる。*/
-    const server = http.createServer(app)
-    server.listen(8080)
+    http.createServer(app).listen(process.env.SERVER_PORT)
 
     // --- TypeORMの設定
     const connectionOptions: ConnectionOptions = await getConnectionOptions()
@@ -26,4 +26,5 @@ import router from './router'
 
     // APIRouter
     app.use('/api', router)
-})()
+}
+server()

@@ -46,6 +46,7 @@ services:
       - DB_USER=${DB_USER}
       - DB_PASS=${DB_PASS}
       - DB_NAME=${DB_NAME}
+      - SERVER_PORT=${SERVER_PORT}
     command: >
       bash -c "
       git clone ${GIT_URL} /home/user/${GIT_PROJECT};

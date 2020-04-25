@@ -1,25 +1,25 @@
 import { CST } from '../CST'
-import * as Phaser from 'phaser'
+import phaser from 'phaser'
 
 type WalkAnimState = 'walk_front' | 'walk_back' | 'walk_left' | 'walk_right' | ''
 
 type MoveDir = -1 | 0 | 1
 
-export class PlayScene extends Phaser.Scene {
-    private map?: Phaser.Tilemaps.Tilemap
-    private mapEvent?: Phaser.Tilemaps.Tilemap // 追加
-    private tiles?: Phaser.Tilemaps.Tileset
-    private mapGroundLayer!: Phaser.Tilemaps.StaticTilemapLayer
-    private mapEventLayer!: Phaser.Tilemaps.StaticTilemapLayer // 追加
-    private cursors!: Phaser.Types.Input.Keyboard.CursorKeys
-    private anna!: Phaser.GameObjects.Sprite
+export class PlayScene extends phaser.Scene {
+    private map?: phaser.Tilemaps.Tilemap
+    private mapEvent?: phaser.Tilemaps.Tilemap // 追加
+    private tiles?: phaser.Tilemaps.Tileset
+    private mapGroundLayer!: phaser.Tilemaps.StaticTilemapLayer
+    private mapEventLayer!: phaser.Tilemaps.StaticTilemapLayer // 追加
+    private cursors!: phaser.Types.Input.Keyboard.CursorKeys
+    private anna!: phaser.GameObjects.Sprite
     private isWalking!: boolean
     private isTalking!: boolean
     private charaTilePos: { tx: number; ty: number } = { tx: 10, ty: 8 }
 
-    private quoteFrame!: Phaser.GameObjects.Image
-    private quote!: Phaser.GameObjects.Text
-    private quoteArea!: Phaser.GameObjects.Container
+    private quoteFrame!: phaser.GameObjects.Image
+    private quote!: phaser.GameObjects.Text
+    private quoteArea!: phaser.GameObjects.Container
 
     private map_ground: number[][] = [
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -87,7 +87,7 @@ export class PlayScene extends Phaser.Scene {
             repeat: -1
         })
 
-        const annaAnims: Phaser.Types.Animations.Animation[] = [
+        const annaAnims: phaser.Types.Animations.Animation[] = [
             {
                 key: 'walk_front',
                 frameRate: 10,
@@ -170,22 +170,22 @@ export class PlayScene extends Phaser.Scene {
         this.quoteArea.add([this.quoteFrame, this.quote]) // ゲームオブジェクトを格納
         this.quoteArea.setVisible(false) // 非表示化
 
-        const pimple: Phaser.GameObjects.Sprite = this.add.sprite(400, 400, 'daze')
+        const pimple: phaser.GameObjects.Sprite = this.add.sprite(400, 400, 'daze')
         pimple.setOrigin(1)
         pimple.play('dazzle')
 
-        // const mandy: Phaser.GameObjects.Sprite = this.add.sprite(
+        // const mandy: phaser.GameObjects.Sprite = this.add.sprite(
         //   400,
         //   400,
         //   'mandy',
         //   0,
         // )
 
-        // const hooded: Phaser.GameObjects.Sprite = this.add
+        // const hooded: phaser.GameObjects.Sprite = this.add
         //   .sprite(200, 200, 'hooded')
         //   .setScale(2)
         //.play('walk_right')
-        const charaPos: Phaser.Math.Vector2 = this.mapGroundLayer.tileToWorldXY(
+        const charaPos: phaser.Math.Vector2 = this.mapGroundLayer.tileToWorldXY(
             this.charaTilePos.tx,
             this.charaTilePos.ty
         )
@@ -287,13 +287,13 @@ export class PlayScene extends Phaser.Scene {
     }
 
     private gridWalkTween(
-        target: Phaser.GameObjects.Sprite,
+        target: phaser.GameObjects.Sprite,
         baseSpeed: number,
         xDir: MoveDir,
         yDir: MoveDir,
         onComplete: () => void
     ): void {
-        const tween: Phaser.Tweens.Tween = this.add.tween({
+        const tween: phaser.Tweens.Tween = this.add.tween({
             // 対象のオブジェクト
             targets: [target],
             // X座標の移動を設定

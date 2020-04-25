@@ -3,9 +3,13 @@ import { CSTSprite } from '../CST'
 import { CSTImage } from '../CST'
 import { CSTAudio } from '../CST'
 import { CSTMap } from '../CST'
-import * as Phaser from 'phaser'
+import phaser from 'phaser'
+import { param } from '../main'
 
-export class LoadScene extends Phaser.Scene {
+const LOAD_SPRITES = 'P0002'
+// const SCREEN_SIZE = 'P0001'
+
+export class LoadScene extends phaser.Scene {
     constructor() {
         super({
             key: CST.SCENES.LOAD
@@ -40,7 +44,7 @@ export class LoadScene extends Phaser.Scene {
         }
     }
 
-    loadSprites(frameConfig?: Phaser.Types.Loader.FileTypes.ImageFrameConfig): void {
+    loadSprites(frameConfig?: phaser.Types.Loader.FileTypes.ImageFrameConfig): void {
         this.load.setPath('./assets/sprite')
         for (const prop in CST.SPRITE) {
             const key: keyof CSTSprite = prop as keyof CSTSprite
@@ -65,7 +69,7 @@ export class LoadScene extends Phaser.Scene {
         this.load.atlas('characters', 'characters.png', 'characters.json')
         this.load.atlas('daze', 'daze.png', 'daze.json')
 
-        const loadingBar: Phaser.GameObjects.Graphics = this.add.graphics({
+        const loadingBar: phaser.GameObjects.Graphics = this.add.graphics({
             fillStyle: {
                 color: 0xffffff //white
             }
@@ -80,7 +84,7 @@ export class LoadScene extends Phaser.Scene {
             console.log('donee')
         })
 
-        this.load.on('load', (file: Phaser.Loader.File) => {
+        this.load.on('load', (file: phaser.Loader.File) => {
             console.log(file.src)
         })
     }

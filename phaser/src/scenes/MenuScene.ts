@@ -1,7 +1,7 @@
 import { CST } from '../CST'
-import * as Phaser from 'phaser'
+import phaser from 'phaser'
 
-export class MenuScene extends Phaser.Scene {
+export class MenuScene extends phaser.Scene {
     constructor() {
         super({
             key: CST.SCENES.MENU
@@ -29,15 +29,15 @@ export class MenuScene extends Phaser.Scene {
 
         this.add.image(0, 0, CST.IMAGE.TITLE).setOrigin(0)
 
-        const playButton: Phaser.GameObjects.Image = this.add
+        const playButton: phaser.GameObjects.Image = this.add
             .image(this.game.renderer.width * 0.5, this.game.renderer.height * 0.5, CST.IMAGE.PLAY)
             .setDepth(1)
 
-        const optionsButton: Phaser.GameObjects.Image = this.add
+        const optionsButton: phaser.GameObjects.Image = this.add
             .image(this.game.renderer.width * 0.5, this.game.renderer.height * 0.5 + 100, CST.IMAGE.OPTIONS)
             .setDepth(1)
 
-        const hoverSprite: Phaser.GameObjects.Sprite = this.add.sprite(100, 100, CST.SPRITE.CAT)
+        const hoverSprite: phaser.GameObjects.Sprite = this.add.sprite(100, 100, CST.SPRITE.CAT)
         hoverSprite.setScale(2)
         hoverSprite.setVisible(false)
 

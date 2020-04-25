@@ -3,7 +3,7 @@ import INumParamRepository from '../../application/repositories/INumParamReposit
 
 export class NumParamRepository extends INumParamRepository {
     async findAll(): Promise<NumParam[]> {
-        //キャッシュの情報はquery-result-cacheテーブルに保存される。でもDBに保存されるのはちょっと微妙かも
+        //TODO キャッシュの情報はquery-result-cacheテーブルに保存される。でもポスグレに保存されるのはちょっと微妙かも。後で調査する
         const results: NumParam[] = await NumParam.find({ cache: true })
         return results
     }
