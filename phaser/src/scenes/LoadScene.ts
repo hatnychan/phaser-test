@@ -1,18 +1,20 @@
-import { CST } from '../CST'
-import { CSTSprite } from '../CST'
-import { CSTImage } from '../CST'
-import { CSTAudio } from '../CST'
-import { CSTMap } from '../CST'
 import phaser from 'phaser'
-import { param } from '../main'
+import { numParam } from '../main'
+import { strParam } from '../main'
+import { SerializeNumParam } from '../../../common/types/SerializeNumParam'
+import { SerializeStrParam } from '../../../common/types/SerializeStrParam'
 
-const LOAD_SPRITES = 'P0002'
-// const SCREEN_SIZE = 'P0001'
+const ASSETS_IMAGE = 'ASSETS_IMAGE'
+const ASSETS_MAP = 'ASSETS_MAP'
+const ASSETS_AUDIO = 'ASSETS_AUDIO'
+const ASSETS_SPRITE = 'ASSETS_SPRITE'
+
+const FRAME_SIZE_ASSETS_SPRITE = 'FRAME_SIZE_ASSETS_SPRITE'
 
 export class LoadScene extends phaser.Scene {
     constructor() {
         super({
-            key: CST.SCENES.LOAD
+            key: 'LOAD'
         })
     }
 
@@ -20,59 +22,14 @@ export class LoadScene extends phaser.Scene {
         console.log('init')
     }
 
-    loadImages(): void {
-        this.load.setPath('./assets/image')
-        for (const prop in CST.IMAGE) {
-            const key: keyof CSTImage = prop as keyof CSTImage
-            this.load.image(CST.IMAGE[key], CST.IMAGE[key])
-        }
-    }
-
-    loadMaps(): void {
-        this.load.setPath('./assets/maps')
-        for (const prop in CST.MAP) {
-            const key: keyof CSTMap = prop as keyof CSTMap
-            this.load.image(CST.MAP[key], CST.MAP[key])
-        }
-    }
-
-    loadAudio(): void {
-        this.load.setPath('./assets/audio')
-        for (const prop in CST.AUDIO) {
-            const key: keyof CSTAudio = prop as keyof CSTAudio
-            this.load.audio(CST.AUDIO[key], CST.AUDIO[key])
-        }
-    }
-
-    loadSprites(frameConfig?: phaser.Types.Loader.FileTypes.ImageFrameConfig): void {
-        this.load.setPath('./assets/sprite')
-        for (const prop in CST.SPRITE) {
-            const key: keyof CSTSprite = prop as keyof CSTSprite
-            this.load.spritesheet(CST.SPRITE[key], CST.SPRITE[key], frameConfig)
-        }
-    }
-
     preload(): void {
         this.loadImages()
         this.loadMaps()
         this.loadAudio()
-        this.loadSprites({
-            frameHeight: 32,
-            frameWidth: 32
-        })
-
-        this.load.setPath('./assets/sprite')
-        this.load.spritesheet('anna', 'anna.png', {
-            frameHeight: 64,
-            frameWidth: 64
-        })
-        this.load.atlas('characters', 'characters.png', 'characters.json')
-        this.load.atlas('daze', 'daze.png', 'daze.json')
+        this.loadSprites()
 
         const loadingBar: phaser.GameObjects.Graphics = this.add.graphics({
-            fillStyle: {
-                color: 0xffffff //white
-            }
+            fillStyle: { color: 0xffffff }
         })
 
         this.load.on('progress', (percent: number) => {
@@ -90,6 +47,48 @@ export class LoadScene extends phaser.Scene {
     }
 
     create(): void {
-        this.scene.start(CST.SCENES.MENU)
+        this.scene.start('MENU')
+    }
+
+    loadImages(): void {
+        this.load.setPath('./assets/image')
+        const assetsImage: SerializeStrParam = strParam.filter(strParam => strParam.paramCd === ASSETS_IMAGE)[0]
+        for (const key in assetsImage.value) {
+            this.load.image(key, assetsImage.value[key])
+        }
+    }
+
+    loadMaps(): void {
+        this.load.setPath('./assets/maps')
+        const assetsMap: SerializeStrParam = strParam.filter(strParam => strParam.paramCd === ASSETS_MAP)[0]
+        for (const key in assetsMap.value) {
+            this.load.image(key, assetsMap.value[key])
+        }
+    }
+
+    loadAudio(): void {
+        this.load.setPath('./assets/audio')
+        const assetsAudio: SerializeStrParam = strParam.filter(strParam => strParam.paramCd === ASSETS_AUDIO)[0]
+        for (const key in assetsAudio.value) {
+            this.load.audio(key, assetsAudio.value[key])
+        }
+    }
+
+    loadSprites(): void {
+        this.load.setPath('./assets/sprite')
+        const assetsSprite: SerializeStrParam = strParam.filter(strParam => strParam.paramCd === ASSETS_SPRITE)[0]
+        const frameSizeAssetsSprite: SerializeNumParam = numParam.filter(
+            numParam => numParam.paramCd === FRAME_SIZE_ASSETS_SPRITE
+        )[0]
+
+        for (const key in assetsSprite.value) {
+            const frameVal: number | undefined = frameSizeAssetsSprite.value[key]
+            if (frameVal === undefined) continue
+            const frameConfig: phaser.Types.Loader.FileTypes.ImageFrameConfig = {
+                frameHeight: frameVal,
+                frameWidth: frameVal
+            }
+            this.load.spritesheet(key, assetsSprite.value[key], frameConfig)
+        }
     }
 }

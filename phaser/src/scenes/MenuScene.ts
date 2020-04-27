@@ -1,20 +1,19 @@
-import { CST } from '../CST'
 import phaser from 'phaser'
 
 export class MenuScene extends phaser.Scene {
     constructor() {
         super({
-            key: CST.SCENES.MENU
+            key: 'MENU'
         })
     }
 
     init(): void {
         console.log('init')
         this.anims.create({
-            key: 'walk',
+            key: 'walk_front',
             frameRate: 4,
             repeat: -1,
-            frames: this.anims.generateFrameNumbers(CST.SPRITE.CAT, {
+            frames: this.anims.generateFrameNumbers('CAT', {
                 frames: [0, 1, 2, 3]
             })
         })
@@ -25,19 +24,21 @@ export class MenuScene extends phaser.Scene {
     }
 
     create(): void {
-        this.add.image(this.game.renderer.width * 0.5, this.game.renderer.height * 0.2, CST.IMAGE.LOGO).setDepth(1)
+        this.add.image(this.game.renderer.width * 0.5, this.game.renderer.height * 0.2, 'LOGO').setDepth(1)
 
-        this.add.image(0, 0, CST.IMAGE.TITLE).setOrigin(0)
+        this.add.image(0, 0, 'TITLE').setOrigin(0)
 
-        const playButton: phaser.GameObjects.Image = this.add
-            .image(this.game.renderer.width * 0.5, this.game.renderer.height * 0.5, CST.IMAGE.PLAY)
-            .setDepth(1)
+        const playButton: phaser.GameObjects.Image = this.add.image(
+            this.game.renderer.width * 0.5,
+            this.game.renderer.height * 0.5,
+            'PLAY'
+        )
 
         const optionsButton: phaser.GameObjects.Image = this.add
-            .image(this.game.renderer.width * 0.5, this.game.renderer.height * 0.5 + 100, CST.IMAGE.OPTIONS)
+            .image(this.game.renderer.width * 0.5, this.game.renderer.height * 0.5 + 100, 'OPTIONS')
             .setDepth(1)
 
-        const hoverSprite: phaser.GameObjects.Sprite = this.add.sprite(100, 100, CST.SPRITE.CAT)
+        const hoverSprite: phaser.GameObjects.Sprite = this.add.sprite(100, 100, 'CAT')
         hoverSprite.setScale(2)
         hoverSprite.setVisible(false)
 
@@ -58,7 +59,7 @@ export class MenuScene extends phaser.Scene {
 
         playButton.on('pointerup', () => {
             console.log('open')
-            this.scene.start(CST.SCENES.PLAY)
+            this.scene.start('PLAY')
         })
 
         optionsButton.setInteractive()
@@ -66,7 +67,7 @@ export class MenuScene extends phaser.Scene {
         optionsButton.on('pointerover', () => {
             console.log('hover')
             hoverSprite.setVisible(true)
-            hoverSprite.play('walk')
+            hoverSprite.play('walk_front')
             hoverSprite.x = optionsButton.x - optionsButton.width
             hoverSprite.y = optionsButton.y
         })

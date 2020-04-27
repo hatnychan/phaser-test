@@ -1,14 +1,15 @@
-import { Entity, PrimaryColumn, PrimaryGeneratedColumn, Column, BaseEntity } from 'typeorm'
+import { Entity, PrimaryColumn, Column, BaseEntity } from 'typeorm'
 
 @Entity()
 export class NumParam extends BaseEntity {
-    @PrimaryColumn({ type: 'char', length: 5 })
-    paramCd!: number
+    @PrimaryColumn({ type: 'varchar', length: 50 })
+    paramCd!: string
 
-    @PrimaryGeneratedColumn()
-    seq!: number
+    @PrimaryColumn({ type: 'varchar', length: 50 })
+    key!: string
 
-    @Column({ type: 'decimal', nullable: true })
+    // typeormの注意。数値型でも型によっては文字型になってしまう。double precisionは数値の扱いになってくれる
+    @Column({ type: 'double precision', nullable: true })
     value?: number
 }
 export default NumParam
