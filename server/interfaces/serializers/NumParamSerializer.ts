@@ -1,6 +1,6 @@
 import NumParam from '../../domain/models/NumParam'
-import { groupBy } from '../../../common/function/commonFunction'
-import { SerializeNumParam } from '../../../common/types/SerializeNumParam'
+import { groupBy } from '../../../common/commonFunction'
+import { SerializeNumParam } from '../../domain/types/SerializeNumParam'
 
 export class NumParamSerializer {
     serialize(data: NumParam[]): SerializeNumParam[] {

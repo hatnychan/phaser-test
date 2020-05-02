@@ -47,7 +47,7 @@ export class MenuScene extends phaser.Scene {
         playButton.on('pointerover', () => {
             console.log('hover')
             hoverSprite.setVisible(true)
-            hoverSprite.play('walk')
+            hoverSprite.play('walk_front')
             hoverSprite.x = playButton.x - playButton.width
             hoverSprite.y = playButton.y
         })

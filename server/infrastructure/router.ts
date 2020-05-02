@@ -2,8 +2,8 @@ import express from 'express'
 import ParamController from '../interfaces/controllers/ParamController'
 import NumParamRepository from '../interfaces/database/NumParamRepository'
 import StrParamRepository from '../interfaces/database/StrParamRepository'
-import { SerializeNumParam } from '../../common/types/SerializeNumParam'
-import { SerializeStrParam } from '../../common/types/SerializeStrParam'
+import { SerializeNumParam } from '../domain/types/SerializeNumParam'
+import { SerializeStrParam } from '../domain/types/SerializeStrParam'
 
 const router: express.Router = express.Router()
 const paramController = new ParamController(new NumParamRepository(), new StrParamRepository())

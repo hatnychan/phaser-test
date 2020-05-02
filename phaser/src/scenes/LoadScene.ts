@@ -1,8 +1,8 @@
 import phaser from 'phaser'
 import { numParam } from '../main'
 import { strParam } from '../main'
-import { SerializeNumParam } from '../../../common/types/SerializeNumParam'
-import { SerializeStrParam } from '../../../common/types/SerializeStrParam'
+import { SerializeNumParam } from '../../../server/domain/types/SerializeNumParam'
+import { SerializeStrParam } from '../../../server/domain/types/SerializeStrParam'
 
 const ASSETS_IMAGE = 'ASSETS_IMAGE'
 const ASSETS_MAP = 'ASSETS_MAP'

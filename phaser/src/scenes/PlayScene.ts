@@ -58,35 +58,9 @@ export class PlayScene extends phaser.Scene {
     ] // 20 * 15
 
     constructor() {
-        super({ key: CST.SCENES.PLAY })
+        super({ key: 'PLAY' })
     }
     init(): void {
-        this.textures.addSpriteSheetFromAtlas('hooded', {
-            frameHeight: 64,
-            frameWidth: 64,
-            atlas: 'characters',
-            frame: 'hooded'
-        })
-
-        this.textures.addSpriteSheetFromAtlas('mandy', {
-            frameHeight: 64,
-            frameWidth: 64,
-            atlas: 'characters',
-            frame: 'mandy'
-        })
-
-        this.anims.create({
-            key: 'dazzle',
-            frameRate: 30,
-            frames: this.anims.generateFrameNames('daze', {
-                prefix: 'daze0',
-                suffix: '.png',
-                start: 0,
-                end: 41
-            }),
-            repeat: -1
-        })
-
         const annaAnims: phaser.Types.Animations.Animation[] = [
             {
                 key: 'walk_front',

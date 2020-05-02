@@ -1,6 +1,6 @@
 import StrParam from '../../domain/models/StrParam'
-import { groupBy } from '../../../common/function/commonFunction'
-import { SerializeStrParam } from '../../../common/types/SerializeStrParam'
+import { groupBy } from '../../../common/commonFunction'
+import { SerializeStrParam } from '../../domain/types/SerializeStrParam'
 
 export class StrParamSerializer {
     serialize(data: StrParam[]): SerializeStrParam[] {

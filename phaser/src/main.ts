@@ -1,7 +1,7 @@
 import phaser from 'phaser'
 import axios from 'axios'
-import { SerializeNumParam } from '../../common/types/SerializeNumParam'
-import { SerializeStrParam } from '../../common/types/SerializeStrParam'
+import { SerializeNumParam } from '../../server/domain/types/SerializeNumParam'
+import { SerializeStrParam } from '../../server/domain/types/SerializeStrParam'
 
 import { LoadScene } from './scenes/LoadScene'
 import { MenuScene } from './scenes/MenuScene'
