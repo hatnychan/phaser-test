@@ -1,7 +1,8 @@
 import phaser from 'phaser'
-import axios from 'axios'
 import { SerializeNumParam } from '../../server/domain/types/SerializeNumParam'
 import { SerializeStrParam } from '../../server/domain/types/SerializeStrParam'
+// import { getInitData } from '../src/functions/api'
+import { getInitData } from '../src/functions/api_mock'
 
 import { LoadScene } from './scenes/LoadScene'
 import { MenuScene } from './scenes/MenuScene'
@@ -11,9 +12,8 @@ const SCREEN_SIZE = 'SCREEN_SIZE'
 
 export let numParam: SerializeNumParam[]
 export let strParam: SerializeStrParam[]
-axios.get<[SerializeNumParam[], SerializeStrParam[]]>('/api/init').then((res): void => {
-    // システムパラメータ全取得
-    const param: [SerializeNumParam[], SerializeStrParam[]] = res.data
+const gameStart = async (): Promise<void> => {
+    const param: [SerializeNumParam[], SerializeStrParam[]] = await getInitData
     numParam = param[0]
     strParam = param[1]
 
@@ -29,4 +29,5 @@ axios.get<[SerializeNumParam[], SerializeStrParam[]]>('/api/init').then((res): v
         scene: [LoadScene, MenuScene, PlayScene],
         render: { pixelArt: true }
     })
-})
+}
+gameStart()
