@@ -1,4 +1,6 @@
 import phaser from 'phaser'
+import { createCharacterAnimation } from '../functions/createAnimation'
+import { strParam } from '../main'
 
 export class MenuScene extends phaser.Scene {
     constructor() {
@@ -9,14 +11,6 @@ export class MenuScene extends phaser.Scene {
 
     init(): void {
         console.log('init')
-        this.anims.create({
-            key: 'walk_front',
-            frameRate: 4,
-            repeat: -1,
-            frames: this.anims.generateFrameNumbers('CAT', {
-                frames: [0, 1, 2, 3]
-            })
-        })
     }
 
     preload(): void {
@@ -41,13 +35,15 @@ export class MenuScene extends phaser.Scene {
         const hoverSprite: phaser.GameObjects.Sprite = this.add.sprite(100, 100, 'CAT')
         hoverSprite.setScale(2)
         hoverSprite.setVisible(false)
+        const frameTotal = hoverSprite.texture.frameTotal - 1
+        createCharacterAnimation(this, strParam, 'CAT', frameTotal)
 
         playButton.setInteractive()
 
         playButton.on('pointerover', () => {
             console.log('hover')
             hoverSprite.setVisible(true)
-            hoverSprite.play('walk_front')
+            hoverSprite.play('walk_back')
             hoverSprite.x = playButton.x - playButton.width
             hoverSprite.y = playButton.y
         })
@@ -67,7 +63,7 @@ export class MenuScene extends phaser.Scene {
         optionsButton.on('pointerover', () => {
             console.log('hover')
             hoverSprite.setVisible(true)
-            hoverSprite.play('walk_front')
+            hoverSprite.play('walk_back')
             hoverSprite.x = optionsButton.x - optionsButton.width
             hoverSprite.y = optionsButton.y
         })

@@ -1,6 +1,6 @@
 export type SerializeStrParam = {
     paramCd: string
     value: {
-        [x: string]: string | undefined
+        [x: string]: string | string[] | undefined
     }
 }

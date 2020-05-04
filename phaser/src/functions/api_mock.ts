@@ -6,8 +6,8 @@ const param: [SerializeNumParam[], SerializeStrParam[]] = [
         {
             paramCd: 'FRAME_SIZE_ASSETS_SPRITE',
             value: {
-                CAT: 32,
-                ANNA: 64
+                CAT: [32, 32],
+                ANNA: [64, 64]
             }
         },
         {
@@ -47,6 +47,13 @@ const param: [SerializeNumParam[], SerializeStrParam[]] = [
             paramCd: 'ASSETS_AUDIO',
             value: {
                 OPENING: 'PerituneMaterial_Splash.mp3'
+            }
+        },
+        {
+            paramCd: 'ANIMATION_CHARACTER',
+            value: {
+                ANNA: ['walk_front', 'walk_left', 'walk_back', 'walk_right'],
+                CAT: ['walk_back', 'walk_left', 'walk_right', 'walk_front']
             }
         }
     ]

@@ -7,6 +7,8 @@ import { createMapObject } from '../functions/createObject'
 // const ASSETS_IMAGE = 'ASSETS_IMAGE'
 
 export class PlayScene extends phaser.Scene {
+    private isWalking!: boolean
+    private isTalking!: boolean
     private mapTileLayer!: phaser.Tilemaps.StaticTilemapLayer
     private mapEventLayer!: phaser.Tilemaps.StaticTilemapLayer // 追加
 
@@ -16,6 +18,8 @@ export class PlayScene extends phaser.Scene {
 
     init(): void {
         console.log('init')
+        this.isWalking = false
+        this.isTalking = false
     }
 
     preload(): void {

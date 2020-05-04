@@ -1,8 +1,8 @@
 import phaser from 'phaser'
-import { numParam } from '../main'
 import { strParam } from '../main'
-import { SerializeNumParam } from '../../../server/domain/types/SerializeNumParam'
+import { numParam } from '../main'
 import { SerializeStrParam } from '../../../server/domain/types/SerializeStrParam'
+import { SerializeNumParam } from '../../../server/domain/types/SerializeNumParam'
 
 const ASSETS_IMAGE = 'ASSETS_IMAGE'
 const ASSETS_MAP = 'ASSETS_MAP'
@@ -77,18 +77,21 @@ export class LoadScene extends phaser.Scene {
     loadSprites(): void {
         this.load.setPath('./assets/sprite')
         const assetsSprite: SerializeStrParam = strParam.filter(strParam => strParam.paramCd === ASSETS_SPRITE)[0]
-        const frameSizeAssetsSprite: SerializeNumParam = numParam.filter(
+        const charaFrameSize: SerializeNumParam = numParam.filter(
             numParam => numParam.paramCd === FRAME_SIZE_ASSETS_SPRITE
         )[0]
 
         for (const key in assetsSprite.value) {
-            const frameVal: number | undefined = frameSizeAssetsSprite.value[key]
-            if (frameVal === undefined) continue
+            const frameSizeWidth: number = (charaFrameSize.value[key] as number[])[0]
+            const frameSizeHeight: number = (charaFrameSize.value[key] as number[])[1]
+
+            console.log(frameSizeWidth)
+            const value: string = assetsSprite.value[key] as string
             const frameConfig: phaser.Types.Loader.FileTypes.ImageFrameConfig = {
-                frameHeight: frameVal,
-                frameWidth: frameVal
+                frameWidth: frameSizeWidth,
+                frameHeight: frameSizeHeight
             }
-            this.load.spritesheet(key, assetsSprite.value[key], frameConfig)
+            this.load.spritesheet(key, value, frameConfig)
         }
     }
 }

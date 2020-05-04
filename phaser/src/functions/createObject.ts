@@ -1,11 +1,11 @@
 import phaser from 'phaser'
 
 export const createMapObject = (
-    PlayScene: phaser.Scene,
+    playScene: phaser.Scene,
     assetsMapParamKey: string | undefined,
     mapObjectPos: number[][]
 ): phaser.Tilemaps.StaticTilemapLayer => {
-    const mapObject: phaser.Tilemaps.Tilemap = PlayScene.make.tilemap({
+    const mapObject: phaser.Tilemaps.Tilemap = playScene.make.tilemap({
         data: mapObjectPos,
         tileWidth: 40,
         tileHeight: 40

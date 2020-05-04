@@ -19,8 +19,8 @@ const gameStart = async (): Promise<void> => {
 
     // スクリーンサイズパラメータ抽出
     const scrnSizeParam: SerializeNumParam = numParam.filter(numParam => numParam.paramCd === SCREEN_SIZE)[0]
-    const width = scrnSizeParam.value.WIDTH
-    const height = scrnSizeParam.value.HEIGHT
+    const width = scrnSizeParam.value.WIDTH as number
+    const height = scrnSizeParam.value.HEIGHT as number
 
     // シーン描画
     new phaser.Game({
