@@ -1,8 +1,10 @@
 import phaser from 'phaser'
-import { createCharacterAnimation } from '../functions/createAnimation'
-import { strParam } from '../main'
+import { createSpriteObject } from '../functions/GameObjectManager'
+import { userData } from '../functions/Util'
 
 export class MenuScene extends phaser.Scene {
+    private spriteLayer: Map<string, phaser.GameObjects.Sprite> = new Map()
+
     constructor() {
         super({
             key: 'MENU'
@@ -17,7 +19,7 @@ export class MenuScene extends phaser.Scene {
         console.log('preload')
     }
 
-    create(): void {
+    async create(): Promise<void> {
         this.add.image(this.game.renderer.width * 0.5, this.game.renderer.height * 0.2, 'LOGO').setDepth(1)
 
         this.add.image(0, 0, 'TITLE').setOrigin(0)
@@ -32,11 +34,11 @@ export class MenuScene extends phaser.Scene {
             .image(this.game.renderer.width * 0.5, this.game.renderer.height * 0.5 + 100, 'OPTIONS')
             .setDepth(1)
 
-        const hoverSprite: phaser.GameObjects.Sprite = this.add.sprite(100, 100, 'CAT')
+        await createSpriteObject(this, userData, this.spriteLayer)
+        const hoverSprite: phaser.GameObjects.Sprite = this.spriteLayer.get('CAT1') as phaser.GameObjects.Sprite
+        hoverSprite.anims.setTimeScale(1 / 6) // frameRate=4。デフォルトが24なので1/6にしている
         hoverSprite.setScale(2)
         hoverSprite.setVisible(false)
-        const frameTotal = hoverSprite.texture.frameTotal - 1
-        createCharacterAnimation(this, strParam, 'CAT', frameTotal)
 
         playButton.setInteractive()
 
@@ -55,7 +57,8 @@ export class MenuScene extends phaser.Scene {
 
         playButton.on('pointerup', () => {
             console.log('open')
-            this.scene.start('PLAY')
+            userData.gameState.scene = 'PLAY'
+            this.scene.start('LOAD')
         })
 
         optionsButton.setInteractive()

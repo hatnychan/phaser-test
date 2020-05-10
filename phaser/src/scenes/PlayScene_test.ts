@@ -176,7 +176,6 @@ export class PlayScene extends phaser.Scene {
                   }
                 | undefined = this.getNowCharaFaceTilePos()
             const heroLastAnim: WalkAnimState | string = this.anna.anims.getCurrentKey()
-            let quote = ''
 
             if (charaFacing === undefined) return
             const eventIndex: number = this.map_event[charaFacing.ty][charaFacing.tx]
@@ -187,7 +186,7 @@ export class PlayScene extends phaser.Scene {
                 this.quoteArea.setVisible(false)
             } else {
                 this.isTalking = true
-
+                let quote = ''
                 if (eventIndex == 2) {
                     if (heroLastAnim == 'walk_front') quote = 'にゃ〜'
                     // 正面から話しかけられた場合

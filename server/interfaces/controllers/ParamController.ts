@@ -6,8 +6,7 @@ import INumParamRepository from '../../application/repositories/INumParamReposit
 import IStrParamRepository from '../../application/repositories/IStrParamRepository'
 import { NumParamSerializer } from '../serializers/NumParamSerializer'
 import { StrParamSerializer } from '../serializers/StrParamSerializer'
-import { SerializeNumParam } from '../../domain/types/SerializeNumParam'
-import { SerializeStrParam } from '../../domain/types/SerializeStrParam'
+import { ParamData, SerializeNumParam, SerializeStrParam } from '../../domain/types/ParamData'
 
 export class ParamController {
     private numParamSerializer: NumParamSerializer
@@ -22,7 +21,7 @@ export class ParamController {
         this.strParamRepository = strParamRepository
     }
 
-    async findAllParam(): Promise<[SerializeNumParam[], SerializeStrParam[]]> {
+    async findAllParam(): Promise<ParamData> {
         const useCaseNumParam: GetAllNumParam = new GetAllNumParam(this.numParamRepository)
         const useCaseStrParam: GetAllStrParam = new GetAllStrParam(this.strParamRepository)
 
@@ -31,9 +30,9 @@ export class ParamController {
             useCaseStrParam.execute()
         ])
 
-        const numParams: SerializeNumParam[] = this.numParamSerializer.serialize(results[0])
-        const strParams: SerializeStrParam[] = this.strParamSerializer.serialize(results[1])
-        const ret: [SerializeNumParam[], SerializeStrParam[]] = [numParams, strParams]
+        const numParams: SerializeNumParam = this.numParamSerializer.serialize(results[0])
+        const strParams: SerializeStrParam = this.strParamSerializer.serialize(results[1])
+        const ret: ParamData = [numParams, strParams]
         return ret
     }
 }

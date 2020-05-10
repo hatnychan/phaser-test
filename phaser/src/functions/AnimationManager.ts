@@ -1,6 +1,6 @@
 import phaser from 'phaser'
-import { SerializeStrParam } from '../../../server/domain/types/SerializeStrParam'
-const ANIMATION_CHARACTER = 'ANIMATION_CHARACTER'
+import { api, userData } from '../main'
+import { SpriteData, SpriteConfig } from '../../../server/domain/types/SpriteData'
 
 const getAnimCharaFrames = (keys: string[], key: string, frameTotal: number): number[] => {
     const colLength = frameTotal / keys.length
@@ -9,28 +9,27 @@ const getAnimCharaFrames = (keys: string[], key: string, frameTotal: number): nu
     return animCharaFrames
 }
 
-export const createCharacterAnimation = (
+export const createCharacterAnimation = async (
     phaserScene: phaser.Scene,
-    strParam: SerializeStrParam[],
-    chara: string,
-    frameTotal: number
-): void => {
-    const animKeys: SerializeStrParam = strParam.filter(strParam => strParam.paramCd === ANIMATION_CHARACTER)[0]
-
+    animeCd: string,
+    frameTotal: number,
+    frameRate: number
+): Promise<void> => {
     const charaAnims: phaser.Types.Animations.Animation[] = []
-    const keys: string[] = animKeys.value[chara] as string[]
+    const spriteData: SpriteData = await api.getSpriteData(userData)
+    const spriteConfig: SpriteConfig[] = spriteData[0]
+    const keys: string[] = spriteConfig.filter(sprite => sprite.animeCd === animeCd)[0].animeKey
     for (const key of keys) {
         const anim: phaser.Types.Animations.Animation = {
             key: key,
-            frameRate: 10,
-            frames: phaserScene.anims.generateFrameNumbers(chara, {
+            frameRate: frameRate,
+            frames: phaserScene.anims.generateFrameNumbers(animeCd, {
                 frames: getAnimCharaFrames(keys, key, frameTotal)
             }),
             repeat: -1
         }
         charaAnims.push(anim)
     }
-
     for (const anim of charaAnims) {
         // アニメーションの数だけループ
         if (phaserScene.anims.create(anim) === false) continue // もしfalseならばこの後何もしない

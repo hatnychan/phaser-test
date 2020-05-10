@@ -1,26 +1,25 @@
 import phaser from 'phaser'
-import { SerializeNumParam } from '../../server/domain/types/SerializeNumParam'
-import { SerializeStrParam } from '../../server/domain/types/SerializeStrParam'
-// import { getInitData } from '../src/functions/api'
-import { getInitData } from '../src/functions/api_mock'
+import { ParamData, SerializeNumParam, SerializeStrParam } from '../../server/domain/types/ParamData'
+import * as Api from './functions/Api_mock'
+import * as Util from './functions/Util'
 
 import { LoadScene } from './scenes/LoadScene'
 import { MenuScene } from './scenes/MenuScene'
 import { PlayScene } from './scenes/PlayScene'
 
-const SCREEN_SIZE = 'SCREEN_SIZE'
+export const api = Api
+export const userData = Util.userData
+export let numParam: SerializeNumParam
+export let strParam: SerializeStrParam
 
-export let numParam: SerializeNumParam[]
-export let strParam: SerializeStrParam[]
 const gameStart = async (): Promise<void> => {
-    const param: [SerializeNumParam[], SerializeStrParam[]] = await getInitData
-    numParam = param[0]
-    strParam = param[1]
+    const paramData: ParamData = await api.getParamData()
+    numParam = paramData[0]
+    strParam = paramData[1]
 
     // スクリーンサイズパラメータ抽出
-    const scrnSizeParam: SerializeNumParam = numParam.filter(numParam => numParam.paramCd === SCREEN_SIZE)[0]
-    const width = scrnSizeParam.value.WIDTH as number
-    const height = scrnSizeParam.value.HEIGHT as number
+    const width = numParam.SCREEN_SIZE.WIDTH
+    const height = numParam.SCREEN_SIZE.HEIGHT
 
     // シーン描画
     new phaser.Game({

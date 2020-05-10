@@ -1,16 +1,26 @@
 import phaser from 'phaser'
-import { getMapTilePos, getMapEventPos } from '../functions/api_mock'
-import { createMapObject } from '../functions/createObject'
+import * as createObj from '../functions/GameObjectManager'
 
 // import { strParam } from '../main'
 // import { SerializeNumParam } from '../../../server/domain/types/SerializeNumParam'
 // const ASSETS_IMAGE = 'ASSETS_IMAGE'
 
 export class PlayScene extends phaser.Scene {
+    // ゲーム状態
     private isWalking!: boolean
     private isTalking!: boolean
+
+    // マップ系オブジェクト
     private mapTileLayer!: phaser.Tilemaps.StaticTilemapLayer
-    private mapEventLayer!: phaser.Tilemaps.StaticTilemapLayer // 追加
+    private mapEventLayer!: phaser.Tilemaps.StaticTilemapLayer
+
+    // 文章系オブジェクト
+    private quoteFrame!: phaser.GameObjects.Image
+    private quote!: phaser.GameObjects.Text
+    private quoteContainer!: phaser.GameObjects.Container
+
+    // キャラクターオブジェクト
+    private character!: { [x: string]: phaser.GameObjects.Sprite }
 
     constructor() {
         super({ key: 'PLAY' })
@@ -27,8 +37,18 @@ export class PlayScene extends phaser.Scene {
     }
 
     create(): void {
-        this.mapTileLayer = createMapObject(this, 'TILE', getMapTilePos)
-        this.mapEventLayer = createMapObject(this, 'NPC', getMapEventPos)
+        // mapレイヤー
+        // this.mapTileLayer = createObj.createMapObject(this, 'TILE', getMapTilePos)
+        // // mapイベントレイヤー
+        // this.mapEventLayer = createObj.createMapObject(this, 'NPC', getMapEventPos)
+        // // 文章フレーム
+        // this.quoteFrame = createObj.createQuoteFrameObject(this)
+        // // 文章
+        // this.quote = createObj.createQuoteObject(this)
+        // // 文章コンテナ
+        // this.quoteContainer = createObj.createQuoteContainerObject(this, this.quoteFrame, this.quote)
+        // キャラクターオブジェクト
+        // createObj.createCharacter()
     }
 
     // update(): void {
