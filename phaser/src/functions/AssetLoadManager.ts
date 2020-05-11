@@ -8,7 +8,7 @@ export const loadImages = (phaserScene: phaser.Scene, userData: UserData): void 
     for (const key in strParam.ASSETS_IMAGE) {
         phaserScene.load.image(key, strParam.ASSETS_IMAGE[key])
     }
-    console.log(userData)
+    userData
 }
 
 export const loadMaps = (phaserScene: phaser.Scene, userData: UserData): void => {
@@ -16,7 +16,7 @@ export const loadMaps = (phaserScene: phaser.Scene, userData: UserData): void =>
     for (const key in strParam.ASSETS_MAP) {
         phaserScene.load.image(key, strParam.ASSETS_MAP[key])
     }
-    console.log(userData)
+    userData
 }
 
 export const loadAudio = (phaserScene: phaser.Scene, userData: UserData): void => {
@@ -24,7 +24,7 @@ export const loadAudio = (phaserScene: phaser.Scene, userData: UserData): void =
     for (const key in strParam.ASSETS_AUDIO) {
         phaserScene.load.audio(key, strParam.ASSETS_AUDIO[key])
     }
-    console.log(userData)
+    userData
 }
 
 export const loadSprites = async (phaserScene: phaser.Scene, userData: UserData): Promise<void> => {

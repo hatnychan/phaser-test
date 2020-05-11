@@ -56,7 +56,6 @@ const createSpriteAnimation = async (
             }),
             repeat: -1
         }
-        console.log(anim)
         phaserScene.anims.create(anim)
     })
 }
@@ -89,6 +88,7 @@ export const createSpriteObject = async (
             sprite.initFrame
         )
         spriteObject.setDisplaySize(numParam.DISPLAY_SIZE.WIDTH, numParam.DISPLAY_SIZE.HEIGHT)
+        spriteObject.setOrigin(0)
         spriteLayer.set(sprite.animeCd, spriteObject)
 
         const spriteAnime = spriteConfig.filter(spriteConf => spriteConf.animeCd === sprite.animeCd)[0]
@@ -123,5 +123,6 @@ export const createQuoteContainerObject = (
     const quoteContainer: phaser.GameObjects.Container = phaserScene.add.container(400, 540) // 生成
     quoteContainer.add([quoteFrame, quote]) // ゲームオブジェクトを格納
     quoteContainer.setVisible(false) // 非表示化
+    quoteContainer.setDepth(1)
     return quoteContainer
 }

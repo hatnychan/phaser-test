@@ -9,6 +9,7 @@ import { PlayScene } from './scenes/PlayScene'
 
 export const api = Api
 export const userData = Util.userData
+userData.scene = 'MENU'
 export let numParam: SerializeNumParam
 export let strParam: SerializeStrParam
 

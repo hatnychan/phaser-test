@@ -1,18 +1,17 @@
 import phaser from 'phaser'
-import * as createObj from '../functions/GameObjectManager'
-
-// import { strParam } from '../main'
-// import { SerializeNumParam } from '../../../server/domain/types/SerializeNumParam'
-// const ASSETS_IMAGE = 'ASSETS_IMAGE'
+import * as objMan from '../functions/GameObjectManager'
+import { userData } from '../main'
 
 export class PlayScene extends phaser.Scene {
     // ゲーム状態
-    private isWalking!: boolean
-    private isTalking!: boolean
+    private gameState = {
+        isWalking: false,
+        isTalking: false
+    }
 
     // マップ系オブジェクト
-    private mapTileLayer!: phaser.Tilemaps.StaticTilemapLayer
-    private mapEventLayer!: phaser.Tilemaps.StaticTilemapLayer
+    private tileMapLayer: Map<string, phaser.Tilemaps.StaticTilemapLayer> = new Map()
+    private eventMapLayer: Map<string, phaser.Tilemaps.StaticTilemapLayer> = new Map()
 
     // 文章系オブジェクト
     private quoteFrame!: phaser.GameObjects.Image
@@ -20,7 +19,7 @@ export class PlayScene extends phaser.Scene {
     private quoteContainer!: phaser.GameObjects.Container
 
     // キャラクターオブジェクト
-    private character!: { [x: string]: phaser.GameObjects.Sprite }
+    spriteLayer: Map<string, phaser.GameObjects.Sprite> = new Map()
 
     constructor() {
         super({ key: 'PLAY' })
@@ -28,8 +27,6 @@ export class PlayScene extends phaser.Scene {
 
     init(): void {
         console.log('init')
-        this.isWalking = false
-        this.isTalking = false
     }
 
     preload(): void {
@@ -38,17 +35,15 @@ export class PlayScene extends phaser.Scene {
 
     create(): void {
         // mapレイヤー
-        // this.mapTileLayer = createObj.createMapObject(this, 'TILE', getMapTilePos)
-        // // mapイベントレイヤー
-        // this.mapEventLayer = createObj.createMapObject(this, 'NPC', getMapEventPos)
-        // // 文章フレーム
-        // this.quoteFrame = createObj.createQuoteFrameObject(this)
-        // // 文章
-        // this.quote = createObj.createQuoteObject(this)
-        // // 文章コンテナ
-        // this.quoteContainer = createObj.createQuoteContainerObject(this, this.quoteFrame, this.quote)
+        objMan.createMapObject(this, userData, this.tileMapLayer, this.eventMapLayer)
         // キャラクターオブジェクト
-        // createObj.createCharacter()
+        objMan.createSpriteObject(this, userData, this.spriteLayer, this.tileMapLayer)
+        // 文章フレーム
+        this.quoteFrame = objMan.createQuoteFrameObject(this)
+        // 文章
+        this.quote = objMan.createQuoteObject(this)
+        // 文章コンテナ
+        this.quoteContainer = objMan.createQuoteContainerObject(this, this.quoteFrame, this.quote)
     }
 
     // update(): void {

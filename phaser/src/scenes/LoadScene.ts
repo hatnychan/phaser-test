@@ -15,10 +15,26 @@ export class LoadScene extends phaser.Scene {
     }
 
     preload(): void {
-        loadImages(this, userData)
-        loadMaps(this, userData)
-        loadAudio(this, userData)
-        loadSprites(this, userData)
+        console.log('preload')
+    }
+
+    async create(): Promise<void> {
+        // preload()にload処理を記述すると初回しかloadしてくれないからcreate()に記述する
+        // 参考：https://www.html5gamedevs.com/topic/39117-question-about-asset-loading/
+        // TODO 何故かconsole.logがダブってる。多分promiseの挙動が絡んでいるがとりあえず動くのでヨシ！
+
+        await Promise.all([
+            loadImages(this, userData),
+            loadMaps(this, userData),
+            loadAudio(this, userData),
+            loadSprites(this, userData)
+        ])
+
+        // loadImages(this, userData)
+        // loadMaps(this, userData)
+        // loadAudio(this, userData)
+        // await loadSprites(this, userData)
+        this.load.start()
 
         const loadingBar: phaser.GameObjects.Graphics = this.add.graphics({
             fillStyle: { color: 0xffffff }
@@ -30,19 +46,11 @@ export class LoadScene extends phaser.Scene {
         })
 
         this.load.on('complete', () => {
-            console.log('donee')
+            this.scene.start(userData.scene)
         })
 
         this.load.on('load', (file: phaser.Loader.File) => {
             console.log(file.src)
         })
-    }
-
-    create(): void {
-        if (userData.gameState.scene === 'MENU') {
-            this.scene.start('MENU')
-        } else if (userData.gameState.scene === 'PLAY') {
-            this.scene.start('PLAY')
-        }
     }
 }

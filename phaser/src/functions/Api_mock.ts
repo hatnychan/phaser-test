@@ -117,7 +117,7 @@ export const spriteDataPlay: SpriteData = [
             animeKey: ['walk_front', 'walk_left', 'walk_back', 'walk_right'],
             texture: 'eyeball.png',
             width: 32,
-            height: 32
+            height: 38
         }
     ],
     [
@@ -158,17 +158,17 @@ const paramData: ParamData = [
 ]
 
 export const getMapData = (userData: UserData): Promise<MapData> => {
-    console.log(userData)
+    userData
     const data: MapData = mapData
     return new Promise(resolve => resolve(data))
 }
 
 export const getSpriteData = (userData: UserData): Promise<SpriteData> => {
     let data: SpriteData
-    if (userData.gameState.scene === 'MENU') {
+    if (userData.scene === 'MENU') {
         data = spriteDataMenu
-    } else if (userData.gameState.scene === 'PLAY') {
-        data = spriteDataMenu
+    } else if (userData.scene === 'PLAY') {
+        data = spriteDataPlay
     }
     return new Promise(resolve => resolve(data))
 }

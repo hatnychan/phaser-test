@@ -38,6 +38,7 @@ export class MenuScene extends phaser.Scene {
         const hoverSprite: phaser.GameObjects.Sprite = this.spriteLayer.get('CAT1') as phaser.GameObjects.Sprite
         hoverSprite.anims.setTimeScale(1 / 6) // frameRate=4。デフォルトが24なので1/6にしている
         hoverSprite.setScale(2)
+        hoverSprite.setOrigin(0.5)
         hoverSprite.setVisible(false)
 
         playButton.setInteractive()
@@ -56,8 +57,7 @@ export class MenuScene extends phaser.Scene {
         })
 
         playButton.on('pointerup', () => {
-            console.log('open')
-            userData.gameState.scene = 'PLAY'
+            userData.scene = 'PLAY'
             this.scene.start('LOAD')
         })
 
