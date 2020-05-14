@@ -96,8 +96,8 @@ export const spriteDataMenu: SpriteData = [
     [
         {
             animeCd: 'CAT1',
-            posX: 100,
-            posY: 100,
+            x: 100,
+            y: 100,
             initFrame: 0
         }
     ]
@@ -123,14 +123,14 @@ export const spriteDataPlay: SpriteData = [
     [
         {
             animeCd: 'ANN1',
-            posX: 10,
-            posY: 8,
+            x: 10,
+            y: 8,
             initFrame: 18
         },
         {
             animeCd: 'EYEBALL1',
-            posX: 3,
-            posY: 4,
+            x: 3,
+            y: 4,
             initFrame: 3
         }
     ]

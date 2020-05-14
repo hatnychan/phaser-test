@@ -10,7 +10,7 @@ export type SpriteConfig = {
 
 export type SpritePos = {
     animeCd: string
-    posX: number
-    posY: number
+    x: number
+    y: number
     initFrame: number
 }

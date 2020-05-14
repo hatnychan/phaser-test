@@ -3,6 +3,7 @@ import { SpriteData, SpritePos, SpriteConfig } from '../../../server/domain/type
 import { MapData, MapPos } from '../../../server/domain/types/MapData'
 import { UserData } from '../../../server/domain/types/UserData'
 import { api, numParam } from '../main'
+import { SpriteLayer } from '../../../server/domain/types/SpriteLayer'
 
 export const createMapObject = async (
     phaserScene: phaser.Scene,
@@ -43,14 +44,10 @@ const getAnimCharaFrames = (keys: string[], key: string, frameTotal: number): nu
     return animCharaFrames
 }
 
-const createSpriteAnimation = async (
-    phaserScene: phaser.Scene,
-    spriteConfig: SpriteConfig,
-    frameTotal: number
-): Promise<void> => {
+const createSpriteAnimation = (phaserScene: phaser.Scene, spriteConfig: SpriteConfig, frameTotal: number): void => {
     spriteConfig.animeKey.forEach((key: string): void => {
         const anim: phaser.Types.Animations.Animation = {
-            key: key,
+            key: spriteConfig.animeCd + '_' + key,
             frames: phaserScene.anims.generateFrameNumbers(spriteConfig.animeCd, {
                 frames: getAnimCharaFrames(spriteConfig.animeKey, key, frameTotal)
             }),
@@ -63,22 +60,21 @@ const createSpriteAnimation = async (
 export const createSpriteObject = async (
     phaserScene: phaser.Scene,
     userData: UserData,
-    spriteLayer: Map<string, phaser.GameObjects.Sprite>,
+    spriteLayer: SpriteLayer,
     tileMapLayer?: Map<string, phaser.Tilemaps.StaticTilemapLayer>
 ): Promise<void> => {
     const spriteData: SpriteData = await api.getSpriteData(userData)
     const spriteConfig: SpriteConfig[] = spriteData[0]
     const spritePos: SpritePos[] = spriteData[1]
-
     const baseTileMap: phaser.Tilemaps.StaticTilemapLayer | undefined =
         tileMapLayer != undefined ? Array.from(tileMapLayer.values())[0] : undefined
 
     spritePos.map(sprite => {
         let spritePos: phaser.Math.Vector2
         if (baseTileMap != undefined) {
-            spritePos = baseTileMap.tileToWorldXY(sprite.posX, sprite.posY)
+            spritePos = baseTileMap.tileToWorldXY(sprite.x, sprite.y)
         } else {
-            spritePos = new phaser.Math.Vector2(sprite.posX, sprite.posY)
+            spritePos = new phaser.Math.Vector2(sprite.x, sprite.y)
         }
 
         const spriteObject: phaser.GameObjects.Sprite = phaserScene.add.sprite(
@@ -89,7 +85,7 @@ export const createSpriteObject = async (
         )
         spriteObject.setDisplaySize(numParam.DISPLAY_SIZE.WIDTH, numParam.DISPLAY_SIZE.HEIGHT)
         spriteObject.setOrigin(0)
-        spriteLayer.set(sprite.animeCd, spriteObject)
+        spriteLayer.set(sprite.animeCd, { spriteObject: spriteObject, x: sprite.x, y: sprite.y })
 
         const spriteAnime = spriteConfig.filter(spriteConf => spriteConf.animeCd === sprite.animeCd)[0]
         const frameTotal = spriteObject.texture.frameTotal - 1

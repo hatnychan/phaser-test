@@ -1,7 +1,9 @@
 import phaser from 'phaser'
 // import { strParam, api, userData } from '../main'
 import { userData } from '../main'
-import { loadImages, loadMaps, loadAudio, loadSprites } from '../functions/AssetLoadManager'
+import { strParam, api } from '../main'
+import { SpriteData } from '../../../server/domain/types/SpriteData'
+import { UserData } from '../../../server/domain/types/UserData'
 
 export class LoadScene extends phaser.Scene {
     constructor() {
@@ -12,28 +14,21 @@ export class LoadScene extends phaser.Scene {
 
     init(): void {
         console.log('init')
+        //this.scene.restart()
     }
 
-    preload(): void {
+    async preload(): Promise<void> {
         console.log('preload')
     }
 
     async create(): Promise<void> {
-        // preload()にload処理を記述すると初回しかloadしてくれないからcreate()に記述する
-        // 参考：https://www.html5gamedevs.com/topic/39117-question-about-asset-loading/
-        // TODO 何故かconsole.logがダブってる。多分promiseの挙動が絡んでいるがとりあえず動くのでヨシ！
-
+        console.log('create')
         await Promise.all([
-            loadImages(this, userData),
-            loadMaps(this, userData),
-            loadAudio(this, userData),
-            loadSprites(this, userData)
+            this.loadImages(this, userData),
+            this.loadMaps(this, userData),
+            this.loadAudio(this, userData),
+            this.loadSprites(this, userData)
         ])
-
-        // loadImages(this, userData)
-        // loadMaps(this, userData)
-        // loadAudio(this, userData)
-        // await loadSprites(this, userData)
         this.load.start()
 
         const loadingBar: phaser.GameObjects.Graphics = this.add.graphics({
@@ -46,11 +41,48 @@ export class LoadScene extends phaser.Scene {
         })
 
         this.load.on('complete', () => {
+            console.log('complete')
             this.scene.start(userData.scene)
         })
 
         this.load.on('load', (file: phaser.Loader.File) => {
             console.log(file.src)
         })
+    }
+
+    private loadImages = (phaserScene: phaser.Scene, userData: UserData): void => {
+        phaserScene.load.setPath('./assets/image')
+        for (const key in strParam.ASSETS_IMAGE) {
+            phaserScene.load.image(key, strParam.ASSETS_IMAGE[key])
+        }
+        userData
+    }
+
+    private loadMaps = (phaserScene: phaser.Scene, userData: UserData): void => {
+        phaserScene.load.setPath('./assets/maps')
+        for (const key in strParam.ASSETS_MAP) {
+            phaserScene.load.image(key, strParam.ASSETS_MAP[key])
+        }
+        userData
+    }
+
+    private loadAudio = (phaserScene: phaser.Scene, userData: UserData): void => {
+        phaserScene.load.setPath('./assets/audio')
+        for (const key in strParam.ASSETS_AUDIO) {
+            phaserScene.load.audio(key, strParam.ASSETS_AUDIO[key])
+        }
+        userData
+    }
+
+    private loadSprites = async (phaserScene: phaser.Scene, userData: UserData): Promise<void> => {
+        phaserScene.load.setPath('./assets/sprite')
+        const spriteData: SpriteData = await api.getSpriteData(userData)
+        const spriteConfig = spriteData[0]
+        for (const sprite of spriteConfig) {
+            phaserScene.load.spritesheet(sprite.animeCd, sprite.texture, {
+                frameWidth: sprite.width,
+                frameHeight: sprite.height
+            })
+        }
     }
 }
