@@ -1,5 +1,5 @@
 import phaser from 'phaser'
-import { SpriteData, SpritePos, SpriteConfig } from '../../../server/domain/types/SpriteData'
+import { SpriteData, SpriteActConfig, SpriteTextureConfig } from '../../../server/domain/types/SpriteData'
 import { MapData, MapPos } from '../../../server/domain/types/MapData'
 import { UserData } from '../../../server/domain/types/UserData'
 import { api, numParam } from '../main'
@@ -17,8 +17,8 @@ export const createMapObject = async (
     mapPos.tilePos.forEach((value, key) => {
         const tileMap: phaser.Tilemaps.Tilemap = phaserScene.make.tilemap({
             data: value,
-            tileWidth: numParam.DISPLAY_SIZE.WIDTH,
-            tileHeight: numParam.DISPLAY_SIZE.HEIGHT
+            tileWidth: numParam.DISPLAY_TILE_MAP_SIZE.VALUE,
+            tileHeight: numParam.DISPLAY_TILE_MAP_SIZE.VALUE
         })
         const tileSet: phaser.Tilemaps.Tileset = tileMap.addTilesetImage(key)
         const staticTileMapLayer: phaser.Tilemaps.StaticTilemapLayer = tileMap.createStaticLayer(0, tileSet, 0, 0)
@@ -28,8 +28,8 @@ export const createMapObject = async (
     mapPos.eventPos.forEach((value, key) => {
         const eventMap: phaser.Tilemaps.Tilemap = phaserScene.make.tilemap({
             data: value,
-            tileWidth: numParam.DISPLAY_SIZE.WIDTH,
-            tileHeight: numParam.DISPLAY_SIZE.HEIGHT
+            tileWidth: numParam.DISPLAY_TILE_MAP_SIZE.VALUE,
+            tileHeight: numParam.DISPLAY_TILE_MAP_SIZE.VALUE
         })
         const eventSet: phaser.Tilemaps.Tileset = eventMap.addTilesetImage(key)
         const staticEventMapLayer: phaser.Tilemaps.StaticTilemapLayer = eventMap.createStaticLayer(0, eventSet, 0, 0)
@@ -44,7 +44,11 @@ const getAnimCharaFrames = (keys: string[], key: string, frameTotal: number): nu
     return animCharaFrames
 }
 
-const createSpriteAnimation = (phaserScene: phaser.Scene, spriteConfig: SpriteConfig, frameTotal: number): void => {
+const createSpriteAnimation = (
+    phaserScene: phaser.Scene,
+    spriteConfig: SpriteTextureConfig,
+    frameTotal: number
+): void => {
     spriteConfig.animeKey.forEach((key: string): void => {
         const anim: phaser.Types.Animations.Animation = {
             key: spriteConfig.animeCd + '_' + key,
@@ -64,30 +68,36 @@ export const createSpriteObject = async (
     tileMapLayer?: Map<string, phaser.Tilemaps.StaticTilemapLayer>
 ): Promise<void> => {
     const spriteData: SpriteData = await api.getSpriteData(userData)
-    const spriteConfig: SpriteConfig[] = spriteData[0]
-    const spritePos: SpritePos[] = spriteData[1]
+    const spriteConfig: SpriteTextureConfig[] = spriteData[0]
+    const spritePos: SpriteActConfig[] = spriteData[1]
     const baseTileMap: phaser.Tilemaps.StaticTilemapLayer | undefined =
         tileMapLayer != undefined ? Array.from(tileMapLayer.values())[0] : undefined
 
     spritePos.map(sprite => {
         let spritePos: phaser.Math.Vector2
         if (baseTileMap != undefined) {
-            spritePos = baseTileMap.tileToWorldXY(sprite.x, sprite.y)
+            spritePos = baseTileMap.tileToWorldXY(sprite.initX, sprite.initY)
         } else {
-            spritePos = new phaser.Math.Vector2(sprite.x, sprite.y)
+            spritePos = new phaser.Math.Vector2(sprite.initX, sprite.initY)
         }
 
         const spriteObject: phaser.GameObjects.Sprite = phaserScene.add.sprite(
             spritePos.x,
             spritePos.y,
-            sprite.animeCd,
+            sprite.initAnimeCd,
             sprite.initFrame
         )
-        spriteObject.setDisplaySize(numParam.DISPLAY_SIZE.WIDTH, numParam.DISPLAY_SIZE.HEIGHT)
+        spriteObject.setDisplaySize(numParam.DISPLAY_TILE_MAP_SIZE.VALUE, numParam.DISPLAY_TILE_MAP_SIZE.VALUE)
         spriteObject.setOrigin(0)
-        spriteLayer.set(sprite.animeCd, { spriteObject: spriteObject, x: sprite.x, y: sprite.y })
+        spriteLayer.set(sprite.initAnimeCd, {
+            spriteObject: spriteObject,
+            x: sprite.initX,
+            y: sprite.initY,
+            act: sprite.act,
+            isAction: false
+        })
 
-        const spriteAnime = spriteConfig.filter(spriteConf => spriteConf.animeCd === sprite.animeCd)[0]
+        const spriteAnime = spriteConfig.filter(spriteConf => spriteConf.animeCd === sprite.initAnimeCd)[0]
         const frameTotal = spriteObject.texture.frameTotal - 1
         createSpriteAnimation(phaserScene, spriteAnime, frameTotal)
     })

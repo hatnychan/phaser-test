@@ -1,15 +1,15 @@
 import phaser from 'phaser'
 import * as objMan from '../functions/GameObjectManager'
 import { userData } from '../main'
-import { MoveDir } from '../../../server/domain/types/MoveDir'
-import { WalkAnimState } from '../../../server/domain/types/WalkAnimState'
 import { TilePos } from '../../../server/domain/types/TilePos'
 import { SpriteLayer, SpriteObject } from '../../../server/domain/types/SpriteLayer'
+import { GameState } from '../../../server/domain/types/GameState'
+import { gridWalkTween, characterAction } from '../functions/CharacterActionManager'
 
 const CONTROL_CHARA = 'EYEBALL1'
 export class PlayScene extends phaser.Scene {
     // ゲーム状態
-    private gameState = {
+    private gameState: GameState = {
         isWalking: false,
         isTalking: false,
         isCreateComplete: false
@@ -25,7 +25,7 @@ export class PlayScene extends phaser.Scene {
     private quoteContainer!: phaser.GameObjects.Container
 
     // キャラクターオブジェクト
-    spriteLayer: SpriteLayer = new Map()
+    private spriteLayer: SpriteLayer = new Map()
 
     // カーソル
     private cursors!: phaser.Types.Input.Keyboard.CursorKeys
@@ -36,6 +36,7 @@ export class PlayScene extends phaser.Scene {
 
     init(): void {
         console.log('init')
+        this.scene.remove('MENU').remove('LOAD')
     }
 
     preload(): void {
@@ -67,105 +68,49 @@ export class PlayScene extends phaser.Scene {
         if (this.gameState.isWalking) return
         if (this.gameState.isTalking) return
 
-        let xDir: MoveDir = 0 // x座標の移動方向を表すための変数
-        let yDir: MoveDir = 0 // y座標の移動方向を表すための変数
-        let animState: WalkAnimState = ''
+        characterAction(this, this.spriteLayer)
 
-        const charaObj: SpriteObject = this.spriteLayer.get(CONTROL_CHARA) as SpriteObject
+        // let xDir = 0 // x座標の移動方向を表すための変数
+        // let yDir = 0 // y座標の移動方向を表すための変数
+        // let animState = ''
 
-        // ここで状態決定（ローカルな変数に格納）
-        if (this.cursors.up != undefined && this.cursors.up.isDown) {
-            animState = 'walk_front'
-            yDir = -1
-        } else if (this.cursors.down != undefined && this.cursors.down.isDown) {
-            animState = 'walk_back'
-            yDir = 1
-        } else if (this.cursors.left != undefined && this.cursors.left.isDown) {
-            animState = 'walk_left'
-            xDir = -1
-        } else if (this.cursors.right != undefined && this.cursors.right.isDown) {
-            animState = 'walk_right'
-            xDir = 1
-        } else {
-            charaObj.spriteObject.anims.stop()
-            return
-        }
-        this.gameState.isWalking = true
-        const charaNewTilePos: TilePos = { tileX: charaObj.x + xDir, tileY: charaObj.y + yDir }
-        this.spriteLayer.set(CONTROL_CHARA, {
-            spriteObject: charaObj.spriteObject,
-            x: charaNewTilePos.tileX,
-            y: charaNewTilePos.tileY
-        })
-        charaObj.spriteObject.anims.play(CONTROL_CHARA + '_' + animState, false)
-        this.gridWalkTween(charaObj.spriteObject, 40, xDir, yDir, () => {
-            this.gameState.isWalking = false
-        })
-    }
+        // const charaObj: SpriteObject = this.spriteLayer.get(CONTROL_CHARA) as SpriteObject
 
-    // グリッド移動
-    private gridWalkTween(
-        target: phaser.GameObjects.Sprite,
-        baseSpeed: number,
-        xDir: MoveDir,
-        yDir: MoveDir,
-        onComplete: () => void
-    ): void {
-        const tween: phaser.Tweens.Tween = this.add.tween({
-            // 対象のオブジェクト
-            targets: [target],
-            // X座標の移動を設定
-            x: {
-                getStart: (): number => target.x,
-                getEnd: (): number => target.x + baseSpeed * xDir
-            },
-            // X座標の移動を設定
-            y: {
-                getStart: (): number => target.y,
-                getEnd: (): number => target.y + baseSpeed * yDir
-            },
-            // アニメーションの時間
-            duration: 600,
-            // アニメーション終了時に発火するコールバック
-            onComplete: () => {
-                tween.stop() // Tweenオブジェクトの削除
-                onComplete() // 引数の関数実行
-            }
-        })
-    }
+        // // ここで状態決定（ローカルな変数に格納）
+        // if (this.cursors.up != undefined && this.cursors.up.isDown) {
+        //     animState = 'walk_front'
+        //     yDir = -1
+        // } else if (this.cursors.down != undefined && this.cursors.down.isDown) {
+        //     animState = 'walk_back'
+        //     yDir = 1
+        // } else if (this.cursors.left != undefined && this.cursors.left.isDown) {
+        //     animState = 'walk_left'
+        //     xDir = -1
+        // } else if (this.cursors.right != undefined && this.cursors.right.isDown) {
+        //     animState = 'walk_right'
+        //     xDir = 1
+        // } else {
+        //     charaObj.spriteObject.anims.stop()
+        //     return
+        // }
+        // this.gameState.isWalking = true
 
-    // キャラクターの向いた先のタイル座標を取得
-    private getNowCharaFaceTilePos(spriteLayerKey: string): TilePos | undefined {
-        if (this.gameState.isWalking) return undefined // 歩いていたら取得できないこととする
+        // // カメラの設定
+        // const camera = this.cameras.main
+        // camera.startFollow(charaObj.spriteObject)
+        // camera.setBounds(0, 0, 1000, 800)
 
-        const baseTileMap: phaser.Tilemaps.StaticTilemapLayer = Array.from(this.tileMapLayer.values())[0]
-
-        const character: phaser.GameObjects.Sprite = (this.spriteLayer.get(spriteLayerKey) as SpriteObject).spriteObject
-        const lastAnim: WalkAnimState = character.anims.getCurrentKey() as WalkAnimState
-
-        const dir: { moveX: MoveDir; moveY: MoveDir } = { moveX: 0, moveY: 0 }
-        const characterPos: phaser.Math.Vector2 = baseTileMap.worldToTileXY(character.x, character.y)
-        const nowPos: TilePos = { tileX: characterPos.x, tileY: characterPos.y }
-
-        if (lastAnim == 'walk_front') {
-            // 手前に歩いていたら
-            dir.moveY = -1
-        } else if (lastAnim == 'walk_left') {
-            // 左に歩いていたら
-            dir.moveX = -1
-        } else if (lastAnim == 'walk_right') {
-            // 右に歩いていたら
-            dir.moveX = 1
-        } else if (lastAnim == 'walk_back') {
-            // 奥に歩いていたら
-            dir.moveY = 1
-        }
-
-        const facing: TilePos = {
-            tileX: nowPos.tileX + dir.moveX,
-            tileY: nowPos.tileY + dir.moveY
-        } // 現在座標から向いてる方向に応じて計算
-
-        return facing
+        // const charaNewTilePos: TilePos = { tileX: charaObj.x + xDir, tileY: charaObj.y + yDir }
+        // this.spriteLayer.set(CONTROL_CHARA, {
+        //     spriteObject: charaObj.spriteObject,
+        //     x: charaNewTilePos.tileX,
+        //     y: charaNewTilePos.tileY,
+        //     act: charaObj.act,
+        //     isAction: charaObj.isAction
+        // })
+        // charaObj.spriteObject.anims.play(CONTROL_CHARA + '_' + animState, false)
+        // gridWalkTween(this, charaObj.spriteObject, xDir, yDir, () => {
+        //     this.gameState.isWalking = false
+        // })
     }
 }

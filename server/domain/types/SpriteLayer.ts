@@ -5,4 +5,6 @@ export type SpriteObject = {
     spriteObject: phaser.GameObjects.Sprite
     x: number
     y: number
+    act: string[]
+    isAction: boolean
 }

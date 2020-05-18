@@ -43,7 +43,6 @@ export class MenuScene extends phaser.Scene {
         hoverSprite.setScale(2)
         hoverSprite.setOrigin(0.5)
         hoverSprite.setVisible(false)
-        console.log(this.sys)
 
         playButton.setInteractive()
 
@@ -65,8 +64,7 @@ export class MenuScene extends phaser.Scene {
             //TODO 単純にscene.startするとLoadSceneで二重にロードが走る(load.start()実行時のみ)
             // load.start()せずにpreloadだけだとこの現象は起きない
             //一端破壊して再度addするとうまくいくがこのあたりの挙動はよくわからん。。。
-            this.scene.remove('LOAD')
-            this.scene.add('LOAD', LoadScene, true)
+            this.scene.remove('LOAD').add('LOAD', LoadScene, true)
         })
 
         optionsButton.setInteractive()

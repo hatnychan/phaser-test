@@ -1,6 +1,6 @@
-export type SpriteData = [SpriteConfig[], SpritePos[]]
+export type SpriteData = [SpriteTextureConfig[], SpriteActConfig[]]
 
-export type SpriteConfig = {
+export type SpriteTextureConfig = {
     animeCd: string
     animeKey: string[]
     texture: string
@@ -8,9 +8,10 @@ export type SpriteConfig = {
     height: number
 }
 
-export type SpritePos = {
-    animeCd: string
-    x: number
-    y: number
+export type SpriteActConfig = {
+    initAnimeCd: string
     initFrame: number
+    initX: number
+    initY: number
+    act: string[]
 }

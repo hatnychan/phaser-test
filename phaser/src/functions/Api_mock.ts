@@ -95,14 +95,16 @@ export const spriteDataMenu: SpriteData = [
     ],
     [
         {
-            animeCd: 'CAT1',
-            x: 100,
-            y: 100,
-            initFrame: 0
+            initAnimeCd: 'CAT1',
+            initFrame: 0,
+            initX: 100,
+            initY: 100,
+            act: []
         }
     ]
 ]
 
+// 後にキャラのスピードデータも入れる。スピードが高いほどmapオブジェクトの後ろに格納される
 export const spriteDataPlay: SpriteData = [
     [
         {
@@ -122,16 +124,54 @@ export const spriteDataPlay: SpriteData = [
     ],
     [
         {
-            animeCd: 'ANN1',
-            x: 10,
-            y: 8,
-            initFrame: 18
+            initAnimeCd: 'ANN1',
+            initFrame: 18,
+            initX: 10,
+            initY: 8,
+            act: []
         },
         {
-            animeCd: 'EYEBALL1',
-            x: 3,
-            y: 4,
-            initFrame: 3
+            initAnimeCd: 'EYEBALL1',
+            initFrame: 3,
+            initX: 3,
+            initY: 4,
+            act: [
+                'walk_back',
+                'walk_left',
+                'walk_back',
+                'walk_back',
+                'walk_back',
+                'walk_right',
+                'walk_left',
+                'walk_left',
+                'walk_back',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_left',
+                'walk_right',
+                'walk_left',
+                'walk_front',
+                'walk_back',
+                'walk_back',
+                'walk_left',
+                'walk_left',
+                'walk_left',
+                'walk_left',
+                'walk_left',
+                'walk_left',
+                'walk_left',
+                'walk_left',
+                'walk_left',
+                'walk_left',
+                'walk_left',
+                'walk_left'
+            ]
         }
     ]
 ]
@@ -139,7 +179,7 @@ export const spriteDataPlay: SpriteData = [
 const paramData: ParamData = [
     {
         SCREEN_SIZE: { WIDTH: 800, HEIGHT: 600 },
-        DISPLAY_SIZE: { WIDTH: 40, HEIGHT: 40 }
+        DISPLAY_TILE_MAP_SIZE: { VALUE: 40 }
     },
     {
         ASSETS_IMAGE: {
