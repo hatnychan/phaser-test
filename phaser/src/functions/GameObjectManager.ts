@@ -5,11 +5,11 @@ import { UserData } from '../../../server/domain/types/UserData'
 import { api, numParam } from '../main'
 import { SpriteLayer } from '../../../server/domain/types/SpriteLayer'
 
+// マップを表示する
 export const createMapObject = async (
     phaserScene: phaser.Scene,
     userData: UserData,
-    tileMapLayer: Map<string, phaser.Tilemaps.StaticTilemapLayer>,
-    eventMapLayer: Map<string, phaser.Tilemaps.StaticTilemapLayer>
+    tileMapLayer: Map<string, phaser.Tilemaps.StaticTilemapLayer>
 ): Promise<void> => {
     const mapData: MapData = await api.getMapData(userData)
     const mapPos: MapPos = mapData[1]
@@ -24,19 +24,9 @@ export const createMapObject = async (
         const staticTileMapLayer: phaser.Tilemaps.StaticTilemapLayer = tileMap.createStaticLayer(0, tileSet, 0, 0)
         tileMapLayer.set(key, staticTileMapLayer)
     })
-
-    mapPos.eventPos.forEach((value, key) => {
-        const eventMap: phaser.Tilemaps.Tilemap = phaserScene.make.tilemap({
-            data: value,
-            tileWidth: numParam.DISPLAY_TILE_MAP_SIZE.VALUE,
-            tileHeight: numParam.DISPLAY_TILE_MAP_SIZE.VALUE
-        })
-        const eventSet: phaser.Tilemaps.Tileset = eventMap.addTilesetImage(key)
-        const staticEventMapLayer: phaser.Tilemaps.StaticTilemapLayer = eventMap.createStaticLayer(0, eventSet, 0, 0)
-        eventMapLayer.set(key, staticEventMapLayer)
-    })
 }
 
+// 画像のサイズからフレームが何個あるかを計算する。
 const getAnimCharaFrames = (keys: string[], key: string, frameTotal: number): number[] => {
     const colLength = frameTotal / keys.length
     const row: number = keys.indexOf(key)
@@ -44,6 +34,8 @@ const getAnimCharaFrames = (keys: string[], key: string, frameTotal: number): nu
     return animCharaFrames
 }
 
+// アニメーションを作成する。
+// アニメーションキーは一意にする。(キーがかぶっていると作成はスルーされる)
 const createSpriteAnimation = (
     phaserScene: phaser.Scene,
     spriteConfig: SpriteTextureConfig,
@@ -61,6 +53,9 @@ const createSpriteAnimation = (
     })
 }
 
+// スプライトオブジェクトを作成・表示する。
+// tileMapLayerが引数として与えられている場合は、initX,initYはタイル座標として扱う
+// 与えられていない場合はワールド座標で表示する。
 export const createSpriteObject = async (
     phaserScene: phaser.Scene,
     userData: UserData,
@@ -103,12 +98,14 @@ export const createSpriteObject = async (
     })
 }
 
+// セリフなどの文章を表示するフレームを作成
 export const createQuoteFrameObject = (phaserScene: phaser.Scene): phaser.GameObjects.Image => {
     const quoteFrame: phaser.GameObjects.Image = phaserScene.add.image(0, 0, 'FRAME') // 生成
     quoteFrame.setDisplaySize(numParam.SCREEN_SIZE.WIDTH, numParam.SCREEN_SIZE.HEIGHT * 0.2) // リサイズ
     return quoteFrame
 }
 
+// 文章を作成
 export const createQuoteObject = (phaserScene: phaser.Scene): phaser.GameObjects.Text => {
     const quote: phaser.GameObjects.Text = phaserScene.add.text(-370, -50, '', {
         fontSize: '40px',
@@ -121,6 +118,7 @@ export const createQuoteObject = (phaserScene: phaser.Scene): phaser.GameObjects
     return quote
 }
 
+// フレームと文章を一つのオブジェクトとして扱う
 export const createQuoteContainerObject = (
     phaserScene: phaser.Scene,
     quoteFrame: phaser.GameObjects.Image,

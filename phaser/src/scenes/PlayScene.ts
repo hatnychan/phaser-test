@@ -4,9 +4,9 @@ import { userData } from '../main'
 import { TilePos } from '../../../server/domain/types/TilePos'
 import { SpriteLayer, SpriteObject } from '../../../server/domain/types/SpriteLayer'
 import { GameState } from '../../../server/domain/types/GameState'
-import { gridWalkTween, characterAction } from '../functions/CharacterActionManager'
+import { gridWalkTween, playCharacterAction } from '../functions/CharacterActionManager'
+import { characterActionAlgo } from '../functions/Api_mock'
 
-const CONTROL_CHARA = 'EYEBALL1'
 export class PlayScene extends phaser.Scene {
     // ゲーム状態
     private gameState: GameState = {
@@ -17,7 +17,6 @@ export class PlayScene extends phaser.Scene {
 
     // マップ系オブジェクト
     private tileMapLayer: Map<string, phaser.Tilemaps.StaticTilemapLayer> = new Map()
-    private eventMapLayer: Map<string, phaser.Tilemaps.StaticTilemapLayer> = new Map()
 
     // 文章系オブジェクト
     private quoteFrame!: phaser.GameObjects.Image
@@ -47,7 +46,7 @@ export class PlayScene extends phaser.Scene {
         // mapレイヤー
         // キャラクターオブジェクト
         await Promise.all([
-            objMan.createMapObject(this, userData, this.tileMapLayer, this.eventMapLayer),
+            objMan.createMapObject(this, userData, this.tileMapLayer),
             objMan.createSpriteObject(this, userData, this.spriteLayer, this.tileMapLayer)
         ])
 
@@ -68,8 +67,9 @@ export class PlayScene extends phaser.Scene {
         if (this.gameState.isWalking) return
         if (this.gameState.isTalking) return
 
-        characterAction(this, this.spriteLayer)
+        playCharacterAction(this, this.spriteLayer)
 
+        // const CONTROL_CHARA = 'EYEBALL1'
         // let xDir = 0 // x座標の移動方向を表すための変数
         // let yDir = 0 // y座標の移動方向を表すための変数
         // let animState = ''
@@ -98,7 +98,7 @@ export class PlayScene extends phaser.Scene {
         // // カメラの設定
         // const camera = this.cameras.main
         // camera.startFollow(charaObj.spriteObject)
-        // camera.setBounds(0, 0, 1000, 800)
+        // camera.setBounds(0, 0, 800, 600)
 
         // const charaNewTilePos: TilePos = { tileX: charaObj.x + xDir, tileY: charaObj.y + yDir }
         // this.spriteLayer.set(CONTROL_CHARA, {
