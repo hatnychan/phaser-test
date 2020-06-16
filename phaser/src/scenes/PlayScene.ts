@@ -16,7 +16,7 @@ export class PlayScene extends phaser.Scene {
     }
 
     // マップ系オブジェクト
-    private tileMapLayer: Map<string, phaser.Tilemaps.StaticTilemapLayer> = new Map()
+    private tileMapLayer: Map<string, phaser.Tilemaps.DynamicTilemapLayer> = new Map()
 
     // 文章系オブジェクト
     private quoteFrame!: phaser.GameObjects.Image
@@ -64,8 +64,8 @@ export class PlayScene extends phaser.Scene {
 
     update(): void {
         if (!this.gameState.isCreateComplete) return
-        if (this.gameState.isWalking) return
-        if (this.gameState.isTalking) return
+        // if (this.gameState.isWalking) return
+        // if (this.gameState.isTalking) return
 
         playCharacterAction(this, this.spriteLayer)
 

@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "build": "webpack",
-    "front": "webpack-dev-server --content-base phaser/dist/",
+    "front": "webpack-dev-server",
     "server": "nodemon --config ./nodemon.json",
     "lint": "eslint '*/**/*.{js,ts}' --quiet --fix",
     "genMigration": "ts-node $(npm bin)/typeorm migration:generate -n Initialize",

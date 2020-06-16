@@ -9,8 +9,4 @@ export type MapPos = {
     mapId: string
     tilePos: Map<string, number[][]>
     eventPos: Map<string, number[][]>
-    frontMapId: string
-    backMapId: string
-    leftMapId: string
-    rightMapId: string
 }

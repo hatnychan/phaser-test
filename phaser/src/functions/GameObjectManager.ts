@@ -9,7 +9,7 @@ import { SpriteLayer } from '../../../server/domain/types/SpriteLayer'
 export const createMapObject = async (
     phaserScene: phaser.Scene,
     userData: UserData,
-    tileMapLayer: Map<string, phaser.Tilemaps.StaticTilemapLayer>
+    tileMapLayer: Map<string, phaser.Tilemaps.DynamicTilemapLayer>
 ): Promise<void> => {
     const mapData: MapData = await api.getMapData(userData)
     const mapPos: MapPos = mapData[1]
@@ -21,7 +21,7 @@ export const createMapObject = async (
             tileHeight: numParam.DISPLAY_TILE_MAP_SIZE.VALUE
         })
         const tileSet: phaser.Tilemaps.Tileset = tileMap.addTilesetImage(key)
-        const staticTileMapLayer: phaser.Tilemaps.StaticTilemapLayer = tileMap.createStaticLayer(0, tileSet, 0, 0)
+        const staticTileMapLayer: phaser.Tilemaps.DynamicTilemapLayer = tileMap.createDynamicLayer(0, tileSet, 0, 0)
         tileMapLayer.set(key, staticTileMapLayer)
     })
 }
@@ -60,12 +60,12 @@ export const createSpriteObject = async (
     phaserScene: phaser.Scene,
     userData: UserData,
     spriteLayer: SpriteLayer,
-    tileMapLayer?: Map<string, phaser.Tilemaps.StaticTilemapLayer>
+    tileMapLayer?: Map<string, phaser.Tilemaps.DynamicTilemapLayer>
 ): Promise<void> => {
     const spriteData: SpriteData = await api.getSpriteData(userData)
     const spriteConfig: SpriteTextureConfig[] = spriteData[0]
     const spritePos: SpriteActConfig[] = spriteData[1]
-    const baseTileMap: phaser.Tilemaps.StaticTilemapLayer | undefined =
+    const baseTileMap: phaser.Tilemaps.DynamicTilemapLayer | undefined =
         tileMapLayer != undefined ? Array.from(tileMapLayer.values())[0] : undefined
 
     spritePos.map(sprite => {

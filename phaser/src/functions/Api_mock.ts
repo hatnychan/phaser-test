@@ -1,9 +1,10 @@
 import { ParamData } from '../../../server/domain/types/ParamData'
-import { MapData, MapPos } from '../../../server/domain/types/MapData'
+import { MapData } from '../../../server/domain/types/MapData'
 import { SpriteData } from '../../../server/domain/types/SpriteData'
 import { UserData } from '../../../server/domain/types/UserData'
 
 // userデータを元に絞る 上下左右のマップ情報も
+// blankレイヤーの配列とその配列番号に対応するmapId配列 blankレイヤーにふれると対応するmapIdが発火
 const mapData: MapData = [
     {
         NPC: 'npc.png',
@@ -55,7 +56,27 @@ const mapData: MapData = [
         ]),
         eventPos: new Map([
             [
-                'NPC',
+                'field2',
+                [
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1]
+                ]
+            ],
+            [
+                'field3',
                 [
                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -71,14 +92,11 @@ const mapData: MapData = [
                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+                    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
                 ]
             ]
-        ]),
-        frontMapId: 'field2',
-        backMapId: '',
-        leftMapId: '',
-        rightMapId: ''
+        ])
     }
 ]
 
@@ -135,7 +153,7 @@ export const spriteDataPlay: SpriteData = [
             initFrame: 3,
             initX: 0,
             initY: 14,
-            act: []
+            act: ['walk_right', 'walk_right', '', 'walk_right']
         }
     ]
 ]
@@ -167,66 +185,34 @@ export const getMapData = (userData: UserData): Promise<MapData> => {
     return new Promise(resolve => resolve(data))
 }
 
-const addUtilityTileArray = (
-    i: number,
-    utilityMap: number[][],
+// 効用計算予定のタイルをtoCalcArrayに格納する。既に存在する座標のタイルならば前回累積効用が小さい方を採用する
+const addNextTiletoArray = (
+    cumUtilityMap: number[][],
     x: number,
     y: number,
-    standardUtility: number,
-    nextUtilityTileArray: {
-        map: number
-        x: number
-        y: number
-        preUtility: number
-    }[],
-    currentUtilityTileArray: {
-        map: number
-        x: number
-        y: number
-        preUtility: number
-    }[]
+    cumUtility: number,
+    toCalcArray: { map: number; x: number; y: number; preCumUtility: number }[]
 ): void => {
-    if (utilityMap[y] != undefined && utilityMap[y][x] != undefined && utilityMap[y][x] === 0) {
-        const nextUtilityTile = { map: utilityMap[y][x], x: x, y: y, preUtility: standardUtility }
-        const existNextUtilityTileArray = nextUtilityTileArray.filter(nut => nut.y === y && nut.x === x)
-        const existNextUtilityTile =
-            existNextUtilityTileArray.length > 0
-                ? existNextUtilityTileArray.reduce((a, b) => (a.preUtility < b.preUtility ? a : b))
-                : undefined
+    if (cumUtilityMap[y] != undefined && cumUtilityMap[y][x] != undefined && cumUtilityMap[y][x] === 0) {
+        const nextUtilityTile = { map: cumUtilityMap[y][x], x: x, y: y, preCumUtility: cumUtility }
+        const existtoCalcArray = toCalcArray.filter(nut => nut.y === y && nut.x === x)
 
-        const existCurrentUtilityTileArray = currentUtilityTileArray.filter(nut => nut.y === y && nut.x === x)
-        const existCurrentUtilityTile =
-            existCurrentUtilityTileArray.length > 0
-                ? existCurrentUtilityTileArray.reduce((a, b) => (a.preUtility < b.preUtility ? a : b))
-                : undefined
-
-        if (i < standardUtility && existNextUtilityTile === undefined) {
-            nextUtilityTileArray.push(nextUtilityTile)
-        } else if (
-            i < standardUtility &&
-            existNextUtilityTile != undefined &&
-            existNextUtilityTile.preUtility > standardUtility
-        ) {
-            const exIndex = nextUtilityTileArray.indexOf(existNextUtilityTile)
-            nextUtilityTileArray[exIndex] = nextUtilityTile
-        } else if (i >= standardUtility && existCurrentUtilityTile === undefined) {
-            currentUtilityTileArray.push(nextUtilityTile)
-        } else if (
-            i >= standardUtility &&
-            existCurrentUtilityTile != undefined &&
-            existCurrentUtilityTile.preUtility > standardUtility
-        ) {
-            const exIndex = currentUtilityTileArray.indexOf(existCurrentUtilityTile)
-            currentUtilityTileArray[exIndex] = nextUtilityTile
+        if (existtoCalcArray.length === 0) {
+            toCalcArray.push(nextUtilityTile)
+        } else if (existtoCalcArray[0].preCumUtility > cumUtility) {
+            const exIndex = toCalcArray.indexOf(existtoCalcArray[0])
+            toCalcArray[exIndex] = nextUtilityTile
         }
     }
 }
 
 // NPC行動アルゴリズム
-export const characterActionAlgo = (): { utilityMap: number[][]; actArray: string[] } => {
+// TODO 立ち止まる制御は未実装
+export const characterActionAlgo = (): { cumUtilityMap: number[][]; actArray: string[] } => {
     const start = { x: 0, y: 14 }
     const goal = { x: 5, y: 0 }
-    const utilityMap = [
+    const cumUtilityMap = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -244,77 +230,91 @@ export const characterActionAlgo = (): { utilityMap: number[][]; actArray: strin
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
     ]
     const tileMap = JSON.parse(JSON.stringify(mapData[1].tilePos.get('TILE') as number[][]))
-    tileMap[5][5] = 3
+    tileMap[0][1] = 3
+    tileMap[0][2] = 3
+    tileMap[0][3] = 3
+    tileMap[0][4] = 3
+    tileMap[1][1] = 3
+    tileMap[2][1] = 3
+    tileMap[3][1] = 3
+    tileMap[4][1] = 3
+    tileMap[5][1] = 3
+    tileMap[6][1] = 3
+    tileMap[7][1] = 3
+    tileMap[9][1] = 3
+    tileMap[10][1] = 3
+    tileMap[11][1] = 3
+
     const charaUtilityCoeff = { time: 1, labor: 1 }
     const tileDataDic = new Map([
         [0, { time: 1, labor: 1 }],
-        [1, { time: 5, labor: 5 }],
-        [3, { time: 0, labor: 5 }]
+        [1, { time: 15, labor: 15 }],
+        [3, { time: 0.01, labor: 0.01 }]
     ])
+
     const baseTileData = { time: 1, labor: 1 }
     const baseUtility = charaUtilityCoeff.time * baseTileData.time + charaUtilityCoeff.labor * baseTileData.labor
+    const toCalcArray = [{ map: cumUtilityMap[goal.y][goal.x], x: goal.x, y: goal.y, preCumUtility: 0 }]
+    let isUtilityLoop = true
+    while (isUtilityLoop) {
+        const currentDeductTile = toCalcArray[0]
+        const x = currentDeductTile.x
+        const y = currentDeductTile.y
+        const preCumUtility = currentDeductTile.preCumUtility
 
-    const nextUtilityTileArray = [{ map: utilityMap[goal.y][goal.x], x: goal.x, y: goal.y, preUtility: 0 }]
-    for (let i = 0; i < 100; i++) {
-        const currentUtilityTileArray = nextUtilityTileArray.slice()
-        const nextUtilityTileCount = nextUtilityTileArray.length
-        console.log('i=' + i)
-        while (0 < currentUtilityTileArray.length) {
-            if (i < currentUtilityTileArray[0].preUtility) {
-                currentUtilityTileArray.shift()
-                continue
-            }
-            console.log('nextUtilityTileArray.length=' + nextUtilityTileArray.length)
-            console.log('currentUtilityTileArray.length=' + currentUtilityTileArray.length)
+        // 累積効用の計算
+        const tile = tileMap[y][x]
+        const tileData = tileDataDic.get(tile) as { time: number; labor: number }
+        const utility = charaUtilityCoeff.time * tileData.time + charaUtilityCoeff.labor * tileData.labor
+        const cumUtility = preCumUtility + utility / baseUtility
+        cumUtilityMap[y][x] = cumUtility
 
-            const currentDeductTile = currentUtilityTileArray[0]
-            const x = currentDeductTile.x
-            const y = currentDeductTile.y
+        // ゴールとその四方のタイルがすべて計算されれば計算終了
+        const endCond1 = cumUtilityMap[start.y][start.x] > 0
+        const endCond2 = cumUtilityMap[start.y - 1] === undefined || cumUtilityMap[start.y - 1][start.x] > 0
+        const endCond3 = cumUtilityMap[start.y + 1] === undefined || cumUtilityMap[start.y + 1][start.x] > 0
+        const endCond4 = cumUtilityMap[start.y][start.x - 1] === undefined || cumUtilityMap[start.y][start.x - 1] > 0
+        const endCond5 = cumUtilityMap[start.y][start.x + 1] === undefined || cumUtilityMap[start.y][start.x + 1] > 0
+        if (endCond1 && endCond2 && endCond3 && endCond4 && endCond5) isUtilityLoop = false
 
-            const tile = tileMap[y][x]
-            const tileData = tileDataDic.get(tile) as { time: number; labor: number }
-            const utility = charaUtilityCoeff.time * tileData.time + charaUtilityCoeff.labor * tileData.labor
-            const standardUtility = (utility / baseUtility) * i + 1
-            utilityMap[y][x] = standardUtility
+        // 四方のタイルを次回計算予定配列に入れる
+        addNextTiletoArray(cumUtilityMap, x - 1, y, cumUtility, toCalcArray)
+        addNextTiletoArray(cumUtilityMap, x + 1, y, cumUtility, toCalcArray)
+        addNextTiletoArray(cumUtilityMap, x, y - 1, cumUtility, toCalcArray)
+        addNextTiletoArray(cumUtilityMap, x, y + 1, cumUtility, toCalcArray)
 
-            addUtilityTileArray(i, utilityMap, x - 1, y, standardUtility, nextUtilityTileArray, currentUtilityTileArray)
-            addUtilityTileArray(i, utilityMap, x + 1, y, standardUtility, nextUtilityTileArray, currentUtilityTileArray)
-            addUtilityTileArray(i, utilityMap, x, y - 1, standardUtility, nextUtilityTileArray, currentUtilityTileArray)
-            addUtilityTileArray(i, utilityMap, x, y + 1, standardUtility, nextUtilityTileArray, currentUtilityTileArray)
-
-            currentUtilityTileArray.shift()
-            console.log('y=' + y + ' x=' + x + ' standardUtility=' + standardUtility)
-        }
-        nextUtilityTileArray.splice(0, nextUtilityTileCount)
+        toCalcArray.shift()
+        toCalcArray.sort((a, b) => (a.preCumUtility > b.preCumUtility ? 1 : a.preCumUtility < b.preCumUtility ? -1 : 0))
+        console.log('y=' + y + ' x=' + x + ' cumUt=' + cumUtility + ' preCumUt=' + preCumUtility)
         console.log('###############################')
     }
 
-    // 効用マップを行動配列に変換
+    // 上の処理で作成した効用マップを行動配列に変換する。
     const actArray = []
-    let currentAct = { utility: utilityMap[start.y][start.x], x: start.x, y: start.y, act: '' }
-    let isLoop = true
-    while (isLoop) {
+    let currentAct = { utility: cumUtilityMap[start.y][start.x], x: start.x, y: start.y, act: '' }
+    let isActLoop = true
+    while (isActLoop) {
         const x = currentAct.x
         const y = currentAct.y
-        currentAct = { utility: utilityMap[y][x], x: x, y: y, act: '' }
+        currentAct = { utility: cumUtilityMap[y][x], x: x, y: y, act: '' }
 
         const minUtility = [currentAct]
-        if (utilityMap[y][x - 1] != undefined)
-            minUtility.push({ utility: utilityMap[y][x - 1], x: x - 1, y: y, act: 'walk_left' })
-        if (utilityMap[y][x + 1] != undefined)
-            minUtility.push({ utility: utilityMap[y][x + 1], x: x + 1, y: y, act: 'walk_right' })
-        if (utilityMap[y - 1] != undefined)
-            minUtility.push({ utility: utilityMap[y - 1][x], x: x, y: y - 1, act: 'walk_front' })
-        if (utilityMap[y + 1] != undefined)
-            minUtility.push({ utility: utilityMap[y + 1][x], x: x, y: y + 1, act: 'walk_back' })
+        if (cumUtilityMap[y][x - 1] != undefined)
+            minUtility.push({ utility: cumUtilityMap[y][x - 1], x: x - 1, y: y, act: 'walk_left' })
+        if (cumUtilityMap[y][x + 1] != undefined)
+            minUtility.push({ utility: cumUtilityMap[y][x + 1], x: x + 1, y: y, act: 'walk_right' })
+        if (cumUtilityMap[y - 1] != undefined)
+            minUtility.push({ utility: cumUtilityMap[y - 1][x], x: x, y: y - 1, act: 'walk_front' })
+        if (cumUtilityMap[y + 1] != undefined)
+            minUtility.push({ utility: cumUtilityMap[y + 1][x], x: x, y: y + 1, act: 'walk_back' })
 
         const nextAct = minUtility.reduce((a, b) => (a.utility < b.utility ? a : b))
         if (nextAct.act != '') actArray.push(nextAct.act)
-        else isLoop = false
+        else isActLoop = false
 
         currentAct = nextAct
     }
-    return { utilityMap: utilityMap, actArray: actArray }
+    return { cumUtilityMap: cumUtilityMap, actArray: actArray }
 }
 
 export const getSpriteData = (userData: UserData): Promise<SpriteData> => {
@@ -323,7 +323,7 @@ export const getSpriteData = (userData: UserData): Promise<SpriteData> => {
         data = spriteDataMenu
     } else if (userData.scene === 'PLAY') {
         const aaa = characterActionAlgo()
-        console.log(aaa.utilityMap)
+        console.log(aaa.cumUtilityMap)
         console.log(aaa.actArray)
         spriteDataPlay[1][0].act = aaa.actArray
         data = spriteDataPlay
