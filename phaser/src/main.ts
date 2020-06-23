@@ -22,12 +22,19 @@ const gameStart = async (): Promise<void> => {
     const width = numParam.SCREEN_SIZE.WIDTH
     const height = numParam.SCREEN_SIZE.HEIGHT
 
-    // シーン描画
+    // シーン描画 ここに必要なものを追加しないとthis.physicsなどが使えない
     new phaser.Game({
         width: width,
         height: height,
         scene: [LoadScene, MenuScene, PlayScene],
-        render: { pixelArt: true }
+        render: { pixelArt: true },
+        physics: {
+            default: 'arcade',
+            arcade: {
+                gravity: { y: 0 },
+                debug: true
+            }
+        }
     })
 }
 gameStart()

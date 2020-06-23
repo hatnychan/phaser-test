@@ -9,11 +9,13 @@ import { SpriteLayer } from '../../../server/domain/types/SpriteLayer'
 export const createMapObject = async (
     phaserScene: phaser.Scene,
     userData: UserData,
-    tileMapLayer: Map<string, phaser.Tilemaps.DynamicTilemapLayer>
+    tileMapLayer: Map<string, phaser.Tilemaps.DynamicTilemapLayer>,
+    eventMapLayer: Map<string, phaser.Tilemaps.DynamicTilemapLayer>
 ): Promise<void> => {
     const mapData: MapData = await api.getMapData(userData)
     const mapPos: MapPos = mapData[1]
 
+    // map作成
     mapPos.tilePos.forEach((value, key) => {
         const tileMap: phaser.Tilemaps.Tilemap = phaserScene.make.tilemap({
             data: value,
@@ -21,8 +23,25 @@ export const createMapObject = async (
             tileHeight: numParam.DISPLAY_TILE_MAP_SIZE.VALUE
         })
         const tileSet: phaser.Tilemaps.Tileset = tileMap.addTilesetImage(key)
-        const staticTileMapLayer: phaser.Tilemaps.DynamicTilemapLayer = tileMap.createDynamicLayer(0, tileSet, 0, 0)
-        tileMapLayer.set(key, staticTileMapLayer)
+        const dynamicTileMapLayer: phaser.Tilemaps.DynamicTilemapLayer = tileMap.createDynamicLayer(0, tileSet, 0, 0)
+        tileMapLayer.set(key, dynamicTileMapLayer)
+    })
+
+    // eventMap作成
+    mapPos.eventPos.forEach((value, key) => {
+        const eventMap: phaser.Tilemaps.Tilemap = phaserScene.make.tilemap({
+            data: value,
+            tileWidth: numParam.DISPLAY_TILE_MAP_SIZE.VALUE,
+            tileHeight: numParam.DISPLAY_TILE_MAP_SIZE.VALUE
+        })
+        const eventSet: phaser.Tilemaps.Tileset = eventMap.addTilesetImage('COMMON')
+        // const dynamicEventMapLayer: phaser.Tilemaps.DynamicTilemapLayer = eventMap
+        //     .createBlankDynamicLayer(key, eventSet)
+        //     .fill(0) // blank
+        const dynamicEventMapLayer: phaser.Tilemaps.DynamicTilemapLayer = eventMap.createDynamicLayer(0, eventSet, 0, 0)
+
+        //dynamicEventMapLayer.setCollisionByExclusion([0])
+        eventMapLayer.set(key, dynamicEventMapLayer)
     })
 }
 
@@ -76,7 +95,7 @@ export const createSpriteObject = async (
             spritePos = new phaser.Math.Vector2(sprite.initX, sprite.initY)
         }
 
-        const spriteObject: phaser.GameObjects.Sprite = phaserScene.add.sprite(
+        const spriteObject: phaser.GameObjects.Sprite = phaserScene.physics.add.sprite(
             spritePos.x,
             spritePos.y,
             sprite.initAnimeCd,

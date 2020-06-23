@@ -8,7 +8,8 @@ import { UserData } from '../../../server/domain/types/UserData'
 const mapData: MapData = [
     {
         NPC: 'npc.png',
-        TILE: 'map_tile.png'
+        TILE: 'map_tile.png',
+        COMMON: 'npc.png'
     },
     {
         mapId: 'field1',
@@ -153,7 +154,29 @@ export const spriteDataPlay: SpriteData = [
             initFrame: 3,
             initX: 0,
             initY: 14,
-            act: ['walk_right', 'walk_right', '', 'walk_right']
+            act: [
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right',
+                'walk_right'
+            ]
         }
     ]
 ]
@@ -173,7 +196,8 @@ const paramData: ParamData = [
         },
         ASSETS_MAP: {
             TILE: 'map_tile.png',
-            NPC: 'npc.png'
+            NPC: 'npc.png',
+            COMMON: 'npc.png'
         },
         ASSETS_AUDIO: { OPENING: 'PerituneMaterial_Splash.mp3' }
     }
@@ -212,7 +236,6 @@ export const characterActionAlgo = (): { cumUtilityMap: number[][]; actArray: st
     const start = { x: 0, y: 14 }
     const goal = { x: 5, y: 0 }
     const cumUtilityMap = [
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -325,7 +348,7 @@ export const getSpriteData = (userData: UserData): Promise<SpriteData> => {
         const aaa = characterActionAlgo()
         console.log(aaa.cumUtilityMap)
         console.log(aaa.actArray)
-        spriteDataPlay[1][0].act = aaa.actArray
+        //spriteDataPlay[1][0].act = aaa.actArray
         data = spriteDataPlay
     }
     return new Promise(resolve => resolve(data))

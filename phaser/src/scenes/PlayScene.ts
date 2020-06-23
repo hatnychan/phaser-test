@@ -12,11 +12,13 @@ export class PlayScene extends phaser.Scene {
     private gameState: GameState = {
         isWalking: false,
         isTalking: false,
-        isCreateComplete: false
+        isCreateComplete: false,
+        hasSpriteReachedEventTile: false
     }
 
     // マップ系オブジェクト
     private tileMapLayer: Map<string, phaser.Tilemaps.DynamicTilemapLayer> = new Map()
+    private eventMapLayer: Map<string, phaser.Tilemaps.DynamicTilemapLayer> = new Map()
 
     // 文章系オブジェクト
     private quoteFrame!: phaser.GameObjects.Image
@@ -46,7 +48,7 @@ export class PlayScene extends phaser.Scene {
         // mapレイヤー
         // キャラクターオブジェクト
         await Promise.all([
-            objMan.createMapObject(this, userData, this.tileMapLayer),
+            objMan.createMapObject(this, userData, this.tileMapLayer, this.eventMapLayer),
             objMan.createSpriteObject(this, userData, this.spriteLayer, this.tileMapLayer)
         ])
 
@@ -59,6 +61,27 @@ export class PlayScene extends phaser.Scene {
         // カーソル
         this.cursors = this.input.keyboard.createCursorKeys()
 
+        // 接触判定設定
+        this.eventMapLayer.forEach((eventVal, eventKey) => {
+            this.spriteLayer.forEach((spriteVal, spriteKey) => {
+                this.physics.add.collider(spriteVal.spriteObject, eventVal)
+                spriteKey
+            })
+            eventKey
+        })
+
+        this.eventMapLayer.forEach((eventVal, eventKey) => {
+            eventVal.setTileIndexCallback(
+                1,
+                () => {
+                    this.gameState.hasSpriteReachedEventTile = true
+                    console.log('bbb')
+                },
+                this
+            )
+            eventKey
+        })
+
         this.gameState.isCreateComplete = true
     }
 
@@ -68,6 +91,13 @@ export class PlayScene extends phaser.Scene {
         // if (this.gameState.isTalking) return
 
         playCharacterAction(this, this.spriteLayer)
+
+        console.log(this.gameState.hasSpriteReachedEventTile)
+        if (!this.gameState.hasSpriteReachedEventTile) return
+        //this.sprite.destroy()
+        this.gameState.isCreateComplete = false
+        this.gameState.hasSpriteReachedEventTile = false
+        this.scene.restart()
 
         // const CONTROL_CHARA = 'EYEBALL1'
         // let xDir = 0 // x座標の移動方向を表すための変数
