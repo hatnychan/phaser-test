@@ -61,10 +61,8 @@ export class MenuScene extends phaser.Scene {
 
         playButton.on('pointerup', () => {
             userData.scene = 'PLAY'
-            //TODO 単純にscene.startするとLoadSceneで二重にロードが走る(load.start()実行時のみ)
-            // load.start()せずにpreloadだけだとこの現象は起きない
-            //一端破壊して再度addするとうまくいくがこのあたりの挙動はよくわからん。。。
-            this.scene.remove('LOAD').add('LOAD', LoadScene, true)
+            this.scene.add('LOAD', LoadScene, false)
+            this.scene.start('LOAD').stop('MENU')
         })
 
         optionsButton.setInteractive()

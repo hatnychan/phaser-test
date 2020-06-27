@@ -3,6 +3,7 @@ import phaser from 'phaser'
 import { userData } from '../main'
 import { strParam, api } from '../main'
 import { SpriteData } from '../../../server/domain/types/SpriteData'
+import { MapData } from '../../../server/domain/types/MapData'
 import { UserData } from '../../../server/domain/types/UserData'
 
 export class LoadScene extends phaser.Scene {
@@ -14,7 +15,6 @@ export class LoadScene extends phaser.Scene {
 
     init(): void {
         console.log('init')
-        //this.scene.restart()
     }
 
     async preload(): Promise<void> {
@@ -42,12 +42,19 @@ export class LoadScene extends phaser.Scene {
 
         this.load.on('complete', () => {
             console.log('complete')
-            this.scene.start(userData.scene)
+            this.scene.start(userData.scene).remove('LOAD')
         })
 
         this.load.on('load', (file: phaser.Loader.File) => {
             console.log(file.src)
         })
+
+        // ロードするものが無いとcompleteが発火しないのでローディング中でないステータスで発火させる。
+        const isLoading = this.load.isLoading()
+        if (!isLoading) {
+            console.log('does not exist load assets')
+            this.scene.start(userData.scene).remove('LOAD')
+        }
     }
 
     private loadImages = (phaserScene: phaser.Scene, userData: UserData): void => {
@@ -58,12 +65,13 @@ export class LoadScene extends phaser.Scene {
         userData
     }
 
-    private loadMaps = (phaserScene: phaser.Scene, userData: UserData): void => {
-        phaserScene.load.setPath('./assets/maps')
-        for (const key in strParam.ASSETS_MAP) {
-            phaserScene.load.image(key, strParam.ASSETS_MAP[key])
+    private loadMaps = async (phaserScene: phaser.Scene, userData: UserData): Promise<void> => {
+        const mapData: MapData = await api.getMapData(userData)
+        phaserScene.load.setPath('./assets/maps') // awaitの上だとsetPathがうまく設定されない
+        const mapImage = mapData[0]
+        for (const key in mapImage) {
+            phaserScene.load.image(key, mapImage[key])
         }
-        userData
     }
 
     private loadAudio = (phaserScene: phaser.Scene, userData: UserData): void => {
@@ -75,8 +83,9 @@ export class LoadScene extends phaser.Scene {
     }
 
     private loadSprites = async (phaserScene: phaser.Scene, userData: UserData): Promise<void> => {
-        phaserScene.load.setPath('./assets/sprite')
+        // TODO ここではgetSpriteDataの画像データだけあれば良いからキャラクターの行動アルゴリズムが動かないようにする
         const spriteData: SpriteData = await api.getSpriteData(userData)
+        phaserScene.load.setPath('./assets/sprite') // awaitの上だとsetPathがうまく設定されない
         const spriteConfig = spriteData[0]
         for (const sprite of spriteConfig) {
             phaserScene.load.spritesheet(sprite.animeCd, sprite.texture, {

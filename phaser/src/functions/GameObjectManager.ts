@@ -4,6 +4,8 @@ import { MapData, MapPos } from '../../../server/domain/types/MapData'
 import { UserData } from '../../../server/domain/types/UserData'
 import { api, numParam } from '../main'
 import { SpriteLayer } from '../../../server/domain/types/SpriteLayer'
+import { GameState } from '../../../server/domain/types/GameState'
+import { LoadScene } from '../scenes/LoadScene'
 
 // マップを表示する
 export const createMapObject = async (
@@ -34,13 +36,9 @@ export const createMapObject = async (
             tileWidth: numParam.DISPLAY_TILE_MAP_SIZE.VALUE,
             tileHeight: numParam.DISPLAY_TILE_MAP_SIZE.VALUE
         })
-        const eventSet: phaser.Tilemaps.Tileset = eventMap.addTilesetImage('COMMON')
-        // const dynamicEventMapLayer: phaser.Tilemaps.DynamicTilemapLayer = eventMap
-        //     .createBlankDynamicLayer(key, eventSet)
-        //     .fill(0) // blank
+        const eventSet: phaser.Tilemaps.Tileset = eventMap.addTilesetImage('EVENT')
         const dynamicEventMapLayer: phaser.Tilemaps.DynamicTilemapLayer = eventMap.createDynamicLayer(0, eventSet, 0, 0)
 
-        //dynamicEventMapLayer.setCollisionByExclusion([0])
         eventMapLayer.set(key, dynamicEventMapLayer)
     })
 }
@@ -148,4 +146,41 @@ export const createQuoteContainerObject = (
     quoteContainer.setVisible(false) // 非表示化
     quoteContainer.setDepth(1)
     return quoteContainer
+}
+
+// マップイベント接触判定設定
+export const setCollisonMapEvent = (
+    phaserScene: phaser.Scene,
+    eventMapLayer: Map<string, phaser.Tilemaps.DynamicTilemapLayer>,
+    spriteLayer: SpriteLayer,
+    gameState: GameState
+): void => {
+    eventMapLayer.forEach((eventVal, eventKey) => {
+        spriteLayer.forEach((spriteVal, spriteKey) => {
+            phaserScene.physics.add.collider(spriteVal.spriteObject, eventVal)
+            spriteKey
+        })
+        eventKey
+    })
+
+    eventMapLayer.forEach((eventVal, eventKey) => {
+        eventVal.setTileIndexCallback(
+            numParam.EVENT_TILE_INDEX.SCREEN_TRANSITION,
+            () => {
+                gameState.isCreateComplete = false
+                const cam = phaserScene.cameras.main
+                cam.fade(250, 0, 0, 0)
+                cam.once('camerafadeoutcomplete', () => {
+                    phaserScene.scene.add('LOAD', LoadScene, false)
+                    phaserScene.scene.start('LOAD').stop('PLAY')
+                })
+
+                // 本当はnullが設定できるはずなんだけど(メソッドの説明にもかいてある)、tslintでエラーがでるのでts-ignoreで抑制している。
+                //@ts-ignore
+                eventVal.setTileIndexCallback(numParam.EVENT_TILE_INDEX.SCREEN_TRANSITION, null, phaserScene)
+            },
+            phaserScene
+        )
+        eventKey
+    })
 }

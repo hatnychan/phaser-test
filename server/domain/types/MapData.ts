@@ -1,9 +1,7 @@
-export type MapData = [MapConfig, MapPos]
+export type MapData = [MapImage, MapPos]
 
-export type MapConfig = {
-    NPC: string
-    TILE: string
-    COMMON: string
+export type MapImage = {
+    [x: string]: string
 }
 
 export type MapPos = {

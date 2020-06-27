@@ -5,15 +5,13 @@ import { TilePos } from '../../../server/domain/types/TilePos'
 import { SpriteLayer, SpriteObject } from '../../../server/domain/types/SpriteLayer'
 import { GameState } from '../../../server/domain/types/GameState'
 import { gridWalkTween, playCharacterAction } from '../functions/CharacterActionManager'
-import { characterActionAlgo } from '../functions/Api_mock'
 
 export class PlayScene extends phaser.Scene {
     // ゲーム状態
     private gameState: GameState = {
         isWalking: false,
         isTalking: false,
-        isCreateComplete: false,
-        hasSpriteReachedEventTile: false
+        isCreateComplete: false
     }
 
     // マップ系オブジェクト
@@ -37,7 +35,6 @@ export class PlayScene extends phaser.Scene {
 
     init(): void {
         console.log('init')
-        this.scene.remove('MENU').remove('LOAD')
     }
 
     preload(): void {
@@ -60,27 +57,8 @@ export class PlayScene extends phaser.Scene {
         this.quoteContainer = objMan.createQuoteContainerObject(this, this.quoteFrame, this.quote)
         // カーソル
         this.cursors = this.input.keyboard.createCursorKeys()
-
-        // 接触判定設定
-        this.eventMapLayer.forEach((eventVal, eventKey) => {
-            this.spriteLayer.forEach((spriteVal, spriteKey) => {
-                this.physics.add.collider(spriteVal.spriteObject, eventVal)
-                spriteKey
-            })
-            eventKey
-        })
-
-        this.eventMapLayer.forEach((eventVal, eventKey) => {
-            eventVal.setTileIndexCallback(
-                1,
-                () => {
-                    this.gameState.hasSpriteReachedEventTile = true
-                    console.log('bbb')
-                },
-                this
-            )
-            eventKey
-        })
+        // マップイベント接触判定設定
+        objMan.setCollisonMapEvent(this, this.eventMapLayer, this.spriteLayer, this.gameState)
 
         this.gameState.isCreateComplete = true
     }
@@ -91,13 +69,6 @@ export class PlayScene extends phaser.Scene {
         // if (this.gameState.isTalking) return
 
         playCharacterAction(this, this.spriteLayer)
-
-        console.log(this.gameState.hasSpriteReachedEventTile)
-        if (!this.gameState.hasSpriteReachedEventTile) return
-        //this.sprite.destroy()
-        this.gameState.isCreateComplete = false
-        this.gameState.hasSpriteReachedEventTile = false
-        this.scene.restart()
 
         // const CONTROL_CHARA = 'EYEBALL1'
         // let xDir = 0 // x座標の移動方向を表すための変数

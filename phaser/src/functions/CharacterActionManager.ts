@@ -58,7 +58,7 @@ export const characterWalking = (phaserScene: phaser.Scene, spriteLayer: SpriteL
     // カメラの設定
     const camera = phaserScene.cameras.main
     camera.startFollow(charaObj.spriteObject)
-    camera.setBounds(0, 0, 800, 600)
+    camera.setBounds(0, 0, 1000, 1000)
 
     const charaNewTilePos: TilePos = { tileX: charaObj.x + xDir, tileY: charaObj.y + yDir }
     charaObj.act.shift()

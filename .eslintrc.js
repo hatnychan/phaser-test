@@ -33,6 +33,7 @@ module.exports = {
           printWidth: 120,
           tabWidth: 4
         }
-      ]
+      ],
+      "@typescript-eslint/ban-ts-ignore": "off"
     },
   };

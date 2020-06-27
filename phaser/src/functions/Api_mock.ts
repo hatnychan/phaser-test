@@ -9,7 +9,7 @@ const mapData: MapData = [
     {
         NPC: 'npc.png',
         TILE: 'map_tile.png',
-        COMMON: 'npc.png'
+        EVENT: 'npc.png'
     },
     {
         mapId: 'field1',
@@ -94,7 +94,7 @@ const mapData: MapData = [
                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
                     [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0]
+                    [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
                 ]
             ]
         ])
@@ -154,29 +154,7 @@ export const spriteDataPlay: SpriteData = [
             initFrame: 3,
             initX: 0,
             initY: 14,
-            act: [
-                'walk_right',
-                'walk_right',
-                'walk_right',
-                'walk_right',
-                'walk_right',
-                'walk_right',
-                'walk_right',
-                'walk_right',
-                'walk_right',
-                'walk_right',
-                'walk_right',
-                'walk_right',
-                'walk_right',
-                'walk_right',
-                'walk_right',
-                'walk_right',
-                'walk_right',
-                'walk_right',
-                'walk_right',
-                'walk_right',
-                'walk_right'
-            ]
+            act: ['walk_right', 'walk_right', 'walk_back', 'walk_right', 'walk_right', 'walk_right', 'walk_back']
         }
     ]
 ]
@@ -184,7 +162,8 @@ export const spriteDataPlay: SpriteData = [
 const paramData: ParamData = [
     {
         SCREEN_SIZE: { WIDTH: 800, HEIGHT: 600 },
-        DISPLAY_TILE_MAP_SIZE: { VALUE: 40 }
+        DISPLAY_TILE_MAP_SIZE: { VALUE: 40 },
+        EVENT_TILE_INDEX: { SCREEN_TRANSITION: 1 }
     },
     {
         ASSETS_IMAGE: {
@@ -193,11 +172,6 @@ const paramData: ParamData = [
             OPTIONS: 'options_button.png',
             PLAY: 'play_button.png',
             TITLE: 'title_bg.jpg'
-        },
-        ASSETS_MAP: {
-            TILE: 'map_tile.png',
-            NPC: 'npc.png',
-            COMMON: 'npc.png'
         },
         ASSETS_AUDIO: { OPENING: 'PerituneMaterial_Splash.mp3' }
     }
@@ -308,8 +282,8 @@ export const characterActionAlgo = (): { cumUtilityMap: number[][]; actArray: st
 
         toCalcArray.shift()
         toCalcArray.sort((a, b) => (a.preCumUtility > b.preCumUtility ? 1 : a.preCumUtility < b.preCumUtility ? -1 : 0))
-        console.log('y=' + y + ' x=' + x + ' cumUt=' + cumUtility + ' preCumUt=' + preCumUtility)
-        console.log('###############################')
+        //console.log('y=' + y + ' x=' + x + ' cumUt=' + cumUtility + ' preCumUt=' + preCumUtility)
+        //console.log('###############################')
     }
 
     // 上の処理で作成した効用マップを行動配列に変換する。
