@@ -9,7 +9,7 @@ const mapData: MapData = [
     {
         NPC: 'npc.png',
         TILE: 'map_tile.png',
-        EVENT: 'npc.png'
+        COMMON: 'common.png'
     },
     {
         mapId: 'field1',
@@ -163,7 +163,8 @@ const paramData: ParamData = [
     {
         SCREEN_SIZE: { WIDTH: 800, HEIGHT: 600 },
         DISPLAY_TILE_MAP_SIZE: { VALUE: 40 },
-        EVENT_TILE_INDEX: { SCREEN_TRANSITION: 1 }
+        EVENT_TILE: { SCREEN_TRANSITION_INDEX: 1 },
+        BLACK_TILE: { INDEX: 1 }
     },
     {
         ASSETS_IMAGE: {

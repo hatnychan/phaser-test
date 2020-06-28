@@ -11,7 +11,9 @@ export class PlayScene extends phaser.Scene {
     private gameState: GameState = {
         isWalking: false,
         isTalking: false,
-        isCreateComplete: false
+        isCreateComplete: false,
+        weather: 'cloudy',
+        timeZone: 'night'
     }
 
     // マップ系オブジェクト
@@ -68,7 +70,11 @@ export class PlayScene extends phaser.Scene {
         // if (this.gameState.isWalking) return
         // if (this.gameState.isTalking) return
 
+        // キャラクターアニメーション開始
         playCharacterAction(this, this.spriteLayer)
+
+        // 天気描画更新
+        objMan.updateWeatherSituation(this.gameState, this.tileMapLayer.get('WEATHER'))
 
         // const CONTROL_CHARA = 'EYEBALL1'
         // let xDir = 0 // x座標の移動方向を表すための変数

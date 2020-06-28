@@ -36,11 +36,19 @@ export const createMapObject = async (
             tileWidth: numParam.DISPLAY_TILE_MAP_SIZE.VALUE,
             tileHeight: numParam.DISPLAY_TILE_MAP_SIZE.VALUE
         })
-        const eventSet: phaser.Tilemaps.Tileset = eventMap.addTilesetImage('EVENT')
+        const eventSet: phaser.Tilemaps.Tileset = eventMap.addTilesetImage('COMMON')
         const dynamicEventMapLayer: phaser.Tilemaps.DynamicTilemapLayer = eventMap.createDynamicLayer(0, eventSet, 0, 0)
-
         eventMapLayer.set(key, dynamicEventMapLayer)
     })
+
+    // weatherLayer作成
+    const baseTileMapKey: string = Array.from(tileMapLayer.keys())[0]
+    const weatherMap: phaser.Tilemaps.Tilemap = tileMapLayer.get(baseTileMapKey)?.tilemap as phaser.Tilemaps.Tilemap
+    const weatherSet: phaser.Tilemaps.Tileset = weatherMap.addTilesetImage('COMMON')
+    const weatherLayer: phaser.Tilemaps.DynamicTilemapLayer = weatherMap
+        .createBlankDynamicLayer('WEATHER', weatherSet)
+        .fill(numParam.BLACK_TILE.INDEX)
+    tileMapLayer.set('WEATHER', weatherLayer)
 }
 
 // 画像のサイズからフレームが何個あるかを計算する。
@@ -165,7 +173,7 @@ export const setCollisonMapEvent = (
 
     eventMapLayer.forEach((eventVal, eventKey) => {
         eventVal.setTileIndexCallback(
-            numParam.EVENT_TILE_INDEX.SCREEN_TRANSITION,
+            numParam.EVENT_TILE.SCREEN_TRANSITION_INDEX,
             () => {
                 gameState.isCreateComplete = false
                 const cam = phaserScene.cameras.main
@@ -177,10 +185,21 @@ export const setCollisonMapEvent = (
 
                 // 本当はnullが設定できるはずなんだけど(メソッドの説明にもかいてある)、tslintでエラーがでるのでts-ignoreで抑制している。
                 //@ts-ignore
-                eventVal.setTileIndexCallback(numParam.EVENT_TILE_INDEX.SCREEN_TRANSITION, null, phaserScene)
+                eventVal.setTileIndexCallback(numParam.EVENT_TILE.SCREEN_TRANSITION_INDEX, null, phaserScene)
             },
             phaserScene
         )
         eventKey
     })
+}
+
+// 天気によってタイルの状態を変更する。
+export const updateWeatherSituation = (
+    gameState: GameState,
+    weatherLayer?: phaser.Tilemaps.DynamicTilemapLayer
+): void => {
+    if (weatherLayer === undefined) return
+    if (gameState.weather === 'cloudy') {
+        weatherLayer.forEachTile(t => (t.alpha = 0.2))
+    }
 }
