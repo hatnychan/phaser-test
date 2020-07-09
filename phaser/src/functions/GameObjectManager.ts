@@ -6,6 +6,7 @@ import { api, numParam } from '../main'
 import { SpriteLayer } from '../../../server/domain/types/SpriteLayer'
 import { GameState } from '../../../server/domain/types/GameState'
 import { LoadScene } from '../scenes/LoadScene'
+import { outputGameLog } from '../functions/Util'
 
 // マップを表示する
 export const createMapObject = async (
@@ -201,5 +202,6 @@ export const updateWeatherSituation = (
     if (weatherLayer === undefined) return
     if (gameState.weather === 'cloudy') {
         weatherLayer.forEachTile(t => (t.alpha = 0.2))
+        outputGameLog('雲が空を覆っている。')
     }
 }

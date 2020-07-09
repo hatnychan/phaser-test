@@ -5,6 +5,7 @@ import { strParam, api } from '../main'
 import { SpriteData } from '../../../server/domain/types/SpriteData'
 import { MapData } from '../../../server/domain/types/MapData'
 import { UserData } from '../../../server/domain/types/UserData'
+import { outputGameLog } from '../functions/Util'
 
 export class LoadScene extends phaser.Scene {
     constructor() {
@@ -14,7 +15,7 @@ export class LoadScene extends phaser.Scene {
     }
 
     init(): void {
-        console.log('init')
+        outputGameLog('世界を構築する要素を準備しています。')
     }
 
     async preload(): Promise<void> {
@@ -42,6 +43,7 @@ export class LoadScene extends phaser.Scene {
 
         this.load.on('complete', () => {
             console.log('complete')
+            outputGameLog('そして、世界は構築されました。')
             this.scene.start(userData.scene).remove('LOAD')
         })
 
@@ -53,6 +55,7 @@ export class LoadScene extends phaser.Scene {
         const isLoading = this.load.isLoading()
         if (!isLoading) {
             console.log('does not exist load assets')
+            outputGameLog('そして、世界は構築されました。')
             this.scene.start(userData.scene).remove('LOAD')
         }
     }

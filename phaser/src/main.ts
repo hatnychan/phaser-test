@@ -13,6 +13,10 @@ userData.scene = 'MENU'
 export let numParam: SerializeNumParam
 export let strParam: SerializeStrParam
 
+const canvas = document.createElement('canvas')
+const gameContainer = document.getElementById('game-screen')
+gameContainer?.appendChild(canvas)
+
 const gameStart = async (): Promise<void> => {
     const paramData: ParamData = await api.getParamData()
     numParam = paramData[0]
@@ -27,13 +31,20 @@ const gameStart = async (): Promise<void> => {
         width: width,
         height: height,
         scene: [LoadScene, MenuScene, PlayScene],
+        type: phaser.CANVAS, // これを追加しないとcanvas要素に描画できない
+        canvas: canvas,
         render: { pixelArt: true },
         physics: {
+            // ここにphysicsを追加しないとthis.physicsなどが使えない
             default: 'arcade',
             arcade: {
                 gravity: { y: 0 },
                 debug: true
             }
+        },
+        scale: {
+            //mode: phaser.Scale.FIT,
+            //autoCenter: phaser.Scale.CENTER_HORIZONTALLY
         }
     })
 }

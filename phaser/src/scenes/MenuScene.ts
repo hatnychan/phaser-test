@@ -1,6 +1,6 @@
 import phaser from 'phaser'
 import { createSpriteObject } from '../functions/GameObjectManager'
-import { userData } from '../functions/Util'
+import { userData, outputGameLog } from '../functions/Util'
 import { SpriteLayer, SpriteObject } from '../../../server/domain/types/SpriteLayer'
 import { LoadScene } from './LoadScene'
 
@@ -16,6 +16,7 @@ export class MenuScene extends phaser.Scene {
 
     init(): void {
         console.log('init')
+        outputGameLog('ようこそ。世界へ。')
     }
 
     preload(): void {
