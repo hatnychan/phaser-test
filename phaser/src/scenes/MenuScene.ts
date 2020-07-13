@@ -3,8 +3,9 @@ import { createSpriteObject } from '../functions/GameObjectManager'
 import { userData, outputGameLog } from '../functions/Util'
 import { SpriteLayer, SpriteObject } from '../../../server/domain/types/SpriteLayer'
 import { LoadScene } from './LoadScene'
+import { api, strParam } from '../main'
+import { SpriteData } from '../../../server/domain/types/SpriteData'
 
-const MENU_CHARA = 'CAT1'
 export class MenuScene extends phaser.Scene {
     private spriteLayer: SpriteLayer = new Map()
 
@@ -16,7 +17,7 @@ export class MenuScene extends phaser.Scene {
 
     init(): void {
         console.log('init')
-        outputGameLog('ようこそ。世界へ。')
+        outputGameLog(strParam.GAME_LOG.WELCOME)
     }
 
     preload(): void {
@@ -38,8 +39,11 @@ export class MenuScene extends phaser.Scene {
             .image(this.game.renderer.width * 0.5, this.game.renderer.height * 0.5 + 100, 'OPTIONS')
             .setDepth(1)
 
+        // MENUspriteアニメーション表示
+        const menuSpriteData: SpriteData = await api.getSpriteData(userData)
+        const menuAnimeCd: string = menuSpriteData[0][0].animeCd
         await createSpriteObject(this, userData, this.spriteLayer)
-        const hoverSprite: phaser.GameObjects.Sprite = (this.spriteLayer.get(MENU_CHARA) as SpriteObject).spriteObject
+        const hoverSprite: phaser.GameObjects.Sprite = (this.spriteLayer.get(menuAnimeCd) as SpriteObject).spriteObject
         hoverSprite.anims.setTimeScale(1 / 6) // frameRate=4。デフォルトが24なので1/6にしている
         hoverSprite.setScale(2)
         hoverSprite.setOrigin(0.5)
@@ -50,7 +54,7 @@ export class MenuScene extends phaser.Scene {
         playButton.on('pointerover', () => {
             console.log('hover')
             hoverSprite.setVisible(true)
-            hoverSprite.play(MENU_CHARA + '_' + 'walk_back')
+            hoverSprite.play(menuAnimeCd + '_' + 'walk_back')
             hoverSprite.x = playButton.x - playButton.width
             hoverSprite.y = playButton.y
         })
@@ -71,7 +75,7 @@ export class MenuScene extends phaser.Scene {
         optionsButton.on('pointerover', () => {
             console.log('hover')
             hoverSprite.setVisible(true)
-            hoverSprite.play(MENU_CHARA + '_' + 'walk_back')
+            hoverSprite.play(menuAnimeCd + '_' + 'walk_back')
             hoverSprite.x = optionsButton.x - optionsButton.width
             hoverSprite.y = optionsButton.y
         })

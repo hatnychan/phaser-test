@@ -15,7 +15,8 @@ export class LoadScene extends phaser.Scene {
     }
 
     init(): void {
-        outputGameLog('世界を構築する要素を準備しています。')
+        console.log('init')
+        if (userData.scene === 'PLAY') outputGameLog(strParam.GAME_LOG.READY_TO_CONSTRUCT)
     }
 
     async preload(): Promise<void> {
@@ -43,7 +44,6 @@ export class LoadScene extends phaser.Scene {
 
         this.load.on('complete', () => {
             console.log('complete')
-            outputGameLog('そして、世界は構築されました。')
             this.scene.start(userData.scene).remove('LOAD')
         })
 
@@ -55,7 +55,6 @@ export class LoadScene extends phaser.Scene {
         const isLoading = this.load.isLoading()
         if (!isLoading) {
             console.log('does not exist load assets')
-            outputGameLog('そして、世界は構築されました。')
             this.scene.start(userData.scene).remove('LOAD')
         }
     }

@@ -2,7 +2,7 @@ import phaser from 'phaser'
 import { SpriteData, SpriteActConfig, SpriteTextureConfig } from '../../../server/domain/types/SpriteData'
 import { MapData, MapPos } from '../../../server/domain/types/MapData'
 import { UserData } from '../../../server/domain/types/UserData'
-import { api, numParam } from '../main'
+import { api, numParam, strParam } from '../main'
 import { SpriteLayer } from '../../../server/domain/types/SpriteLayer'
 import { GameState } from '../../../server/domain/types/GameState'
 import { LoadScene } from '../scenes/LoadScene'
@@ -184,7 +184,7 @@ export const setCollisonMapEvent = (
                     phaserScene.scene.start('LOAD').stop('PLAY')
                 })
 
-                // 本当はnullが設定できるはずなんだけど(メソッドの説明にもかいてある)、tslintでエラーがでるのでts-ignoreで抑制している。
+                // 本当はnullが設定できるはずなんだけど(メソッドの説明にも書いてある)、tslintでエラーがでるのでts-ignoreで抑制している。
                 //@ts-ignore
                 eventVal.setTileIndexCallback(numParam.EVENT_TILE.SCREEN_TRANSITION_INDEX, null, phaserScene)
             },
@@ -201,7 +201,7 @@ export const updateWeatherSituation = (
 ): void => {
     if (weatherLayer === undefined) return
     if (gameState.weather === 'cloudy') {
-        weatherLayer.forEachTile(t => (t.alpha = 0.2))
-        outputGameLog('雲が空を覆っている。')
+        weatherLayer.forEachTile(t => (t.alpha = 0.5))
+        outputGameLog(strParam.GAME_LOG.WEATHER_CROUDY)
     }
 }

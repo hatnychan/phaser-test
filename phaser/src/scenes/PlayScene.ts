@@ -1,10 +1,11 @@
 import phaser from 'phaser'
 import * as objMan from '../functions/GameObjectManager'
-import { userData } from '../main'
+import { userData, strParam } from '../main'
 import { TilePos } from '../../../server/domain/types/TilePos'
 import { SpriteLayer, SpriteObject } from '../../../server/domain/types/SpriteLayer'
 import { GameState } from '../../../server/domain/types/GameState'
 import { gridWalkTween, playCharacterAction } from '../functions/CharacterActionManager'
+import { outputGameLog } from '../functions/Util'
 
 export class PlayScene extends phaser.Scene {
     // ゲーム状態
@@ -37,6 +38,7 @@ export class PlayScene extends phaser.Scene {
 
     init(): void {
         console.log('init')
+        outputGameLog(strParam.GAME_LOG.WORLD_HAS_CONSTRUCT)
     }
 
     preload(): void {

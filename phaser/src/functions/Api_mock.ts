@@ -174,7 +174,13 @@ const paramData: ParamData = [
             PLAY: 'play_button.png',
             TITLE: 'title_bg.jpg'
         },
-        ASSETS_AUDIO: { OPENING: 'PerituneMaterial_Splash.mp3' }
+        ASSETS_AUDIO: { OPENING: 'PerituneMaterial_Splash.mp3' },
+        GAME_LOG: {
+            WELCOME: 'ようこそ。世界へ。',
+            READY_TO_CONSTRUCT: '世界を構築する準備をしています。',
+            WORLD_HAS_CONSTRUCT: '世界は構築されました。',
+            WEATHER_CROUDY: '雲が空を覆っている。'
+        }
     }
 ]
 
