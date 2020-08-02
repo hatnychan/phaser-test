@@ -1,11 +1,9 @@
 import phaser from 'phaser'
 // import { strParam, api, userData } from '../main'
-import { userData } from '../main'
-import { strParam, api } from '../main'
-import { SpriteData } from '../../../server/domain/types/SpriteData'
-import { MapData } from '../../../server/domain/types/MapData'
-import { UserData } from '../../../server/domain/types/UserData'
+import { userData, strParam, commonGameLog } from '../main'
+import { UserData, MapData, SpriteData } from '../../../common/types'
 import { outputGameLog } from '../functions/Util'
+import * as api from '../functions/Api'
 
 export class LoadScene extends phaser.Scene {
     constructor() {
@@ -16,10 +14,10 @@ export class LoadScene extends phaser.Scene {
 
     init(): void {
         console.log('init')
-        if (userData.scene === 'PLAY') outputGameLog(strParam.GAME_LOG.READY_TO_CONSTRUCT)
+        if (userData.scene === 'PLAY') outputGameLog(commonGameLog.READY_TO_CONSTRUCT)
     }
 
-    async preload(): Promise<void> {
+    preload(): void {
         console.log('preload')
     }
 

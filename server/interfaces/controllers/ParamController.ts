@@ -1,12 +1,12 @@
 import NumParam from '../../domain/models/NumParam'
 import StrParam from '../../domain/models/StrParam'
-import GetAllNumParam from '../../application/usecases/GetAllNumParam'
-import GetAllStrParam from '../../application/usecases/GetAllStrParam'
+import FindAllNumParam from '../../application/usecases/FindAllNumParam'
+import FindAllStrParam from '../../application/usecases/FindAllStrParam'
 import INumParamRepository from '../../application/repositories/INumParamRepository'
 import IStrParamRepository from '../../application/repositories/IStrParamRepository'
 import { NumParamSerializer } from '../serializers/NumParamSerializer'
 import { StrParamSerializer } from '../serializers/StrParamSerializer'
-import { ParamData, SerializeNumParam, SerializeStrParam } from '../../domain/types/ParamData'
+import { ParamData, SerializeNumParam, SerializeStrParam } from '../../../common/types'
 
 export class ParamController {
     private numParamSerializer: NumParamSerializer
@@ -22,17 +22,17 @@ export class ParamController {
     }
 
     async findAllParam(): Promise<ParamData> {
-        const useCaseNumParam: GetAllNumParam = new GetAllNumParam(this.numParamRepository)
-        const useCaseStrParam: GetAllStrParam = new GetAllStrParam(this.strParamRepository)
+        const useCaseNumParam: FindAllNumParam = new FindAllNumParam(this.numParamRepository)
+        const useCaseStrParam: FindAllStrParam = new FindAllStrParam(this.strParamRepository)
 
         const results: [NumParam[], StrParam[]] = await Promise.all([
             useCaseNumParam.execute(),
             useCaseStrParam.execute()
         ])
 
-        const numParams: SerializeNumParam = this.numParamSerializer.serialize(results[0])
-        const strParams: SerializeStrParam = this.strParamSerializer.serialize(results[1])
-        const ret: ParamData = [numParams, strParams]
+        const serializedNumParam: SerializeNumParam = this.numParamSerializer.serialize(results[0])
+        const serializedStrParam: SerializeStrParam = this.strParamSerializer.serialize(results[1])
+        const ret: ParamData = [serializedNumParam, serializedStrParam]
         return ret
     }
 }

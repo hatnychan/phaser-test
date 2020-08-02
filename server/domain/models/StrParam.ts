@@ -9,6 +9,6 @@ export class StrParam extends BaseEntity {
     key!: string
 
     @Column({ type: 'varchar', length: 1000, nullable: true })
-    value?: string
+    value!: string
 }
 export default StrParam

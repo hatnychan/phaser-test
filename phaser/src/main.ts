@@ -1,23 +1,27 @@
 import phaser from 'phaser'
-import { ParamData, SerializeNumParam, SerializeStrParam } from '../../server/domain/types/ParamData'
-import * as Api from './functions/Api_mock'
-import * as Util from './functions/Util'
-
+import { ParamData, SerializeNumParam, SerializeStrParam } from '../../common/types'
+import * as api from './functions/Api'
 import { LoadScene } from './scenes/LoadScene'
 import { MenuScene } from './scenes/MenuScene'
 import { PlayScene } from './scenes/PlayScene'
+import { UserData } from '../../common/types'
 
-export const api = Api
-export const userData = Util.userData
-userData.scene = 'MENU'
 export let numParam: SerializeNumParam
 export let strParam: SerializeStrParam
+export let userData: UserData
+export let commonGameLog: { [x: string]: string }
 
 const canvas = document.createElement('canvas')
 const gameContainer = document.getElementById('game-screen')
 gameContainer?.appendChild(canvas)
 
+// twitter認証で取得
+const userId = ''
+
 const gameStart = async (): Promise<void> => {
+    userData = await api.getUserData(userId)
+    commonGameLog = (await api.getGameLog({ gameLogCd: 'COMMON' })).COMMON
+    userData.scene = 'MENU'
     const paramData: ParamData = await api.getParamData()
     numParam = paramData[0]
     strParam = paramData[1]

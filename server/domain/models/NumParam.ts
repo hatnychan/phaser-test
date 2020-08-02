@@ -10,6 +10,6 @@ export class NumParam extends BaseEntity {
 
     // typeormの注意。数値型でも型によっては文字型になってしまう。double precisionは数値の扱いになってくれる
     @Column({ type: 'double precision', nullable: true })
-    value?: number
+    value!: number
 }
 export default NumParam

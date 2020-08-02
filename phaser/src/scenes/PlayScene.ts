@@ -1,11 +1,10 @@
 import phaser from 'phaser'
 import * as objMan from '../functions/GameObjectManager'
-import { userData, strParam } from '../main'
-import { TilePos } from '../../../server/domain/types/TilePos'
-import { SpriteLayer, SpriteObject } from '../../../server/domain/types/SpriteLayer'
-import { GameState } from '../../../server/domain/types/GameState'
+import { userData, commonGameLog, strParam } from '../main'
+import { GameState, MapLayer, SpriteLayer, SpriteObject } from '../../../common/types'
 import { gridWalkTween, playCharacterAction } from '../functions/CharacterActionManager'
 import { outputGameLog } from '../functions/Util'
+import * as api from '../functions/Api'
 
 export class PlayScene extends phaser.Scene {
     // ゲーム状態
@@ -18,8 +17,8 @@ export class PlayScene extends phaser.Scene {
     }
 
     // マップ系オブジェクト
-    private tileMapLayer: Map<string, phaser.Tilemaps.DynamicTilemapLayer> = new Map()
-    private eventMapLayer: Map<string, phaser.Tilemaps.DynamicTilemapLayer> = new Map()
+    private tileMapLayer: MapLayer = new Map()
+    private eventMapLayer: MapLayer = new Map()
 
     // 文章系オブジェクト
     private quoteFrame!: phaser.GameObjects.Image
@@ -38,7 +37,7 @@ export class PlayScene extends phaser.Scene {
 
     init(): void {
         console.log('init')
-        outputGameLog(strParam.GAME_LOG.WORLD_HAS_CONSTRUCT)
+        outputGameLog(commonGameLog.WORLD_HAS_CONSTRUCT)
     }
 
     preload(): void {

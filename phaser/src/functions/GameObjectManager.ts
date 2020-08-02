@@ -1,19 +1,26 @@
 import phaser from 'phaser'
-import { SpriteData, SpriteActConfig, SpriteTextureConfig } from '../../../server/domain/types/SpriteData'
-import { MapData, MapPos } from '../../../server/domain/types/MapData'
-import { UserData } from '../../../server/domain/types/UserData'
-import { api, numParam, strParam } from '../main'
-import { SpriteLayer } from '../../../server/domain/types/SpriteLayer'
-import { GameState } from '../../../server/domain/types/GameState'
+import { numParam, strParam, commonGameLog } from '../main'
 import { LoadScene } from '../scenes/LoadScene'
 import { outputGameLog } from '../functions/Util'
+import * as api from './Api'
+import {
+    MapData,
+    MapPos,
+    UserData,
+    SpriteData,
+    SpriteActConfig,
+    SpriteTextureConfig,
+    SpriteLayer,
+    MapLayer,
+    GameState
+} from '../../../common/types'
 
 // マップを表示する
 export const createMapObject = async (
     phaserScene: phaser.Scene,
     userData: UserData,
-    tileMapLayer: Map<string, phaser.Tilemaps.DynamicTilemapLayer>,
-    eventMapLayer: Map<string, phaser.Tilemaps.DynamicTilemapLayer>
+    tileMapLayer: MapLayer,
+    eventMapLayer: MapLayer
 ): Promise<void> => {
     const mapData: MapData = await api.getMapData(userData)
     const mapPos: MapPos = mapData[1]
@@ -86,7 +93,7 @@ export const createSpriteObject = async (
     phaserScene: phaser.Scene,
     userData: UserData,
     spriteLayer: SpriteLayer,
-    tileMapLayer?: Map<string, phaser.Tilemaps.DynamicTilemapLayer>
+    tileMapLayer?: MapLayer
 ): Promise<void> => {
     const spriteData: SpriteData = await api.getSpriteData(userData)
     const spriteConfig: SpriteTextureConfig[] = spriteData[0]
@@ -160,7 +167,7 @@ export const createQuoteContainerObject = (
 // マップイベント接触判定設定
 export const setCollisonMapEvent = (
     phaserScene: phaser.Scene,
-    eventMapLayer: Map<string, phaser.Tilemaps.DynamicTilemapLayer>,
+    eventMapLayer: MapLayer,
     spriteLayer: SpriteLayer,
     gameState: GameState
 ): void => {
@@ -202,6 +209,6 @@ export const updateWeatherSituation = (
     if (weatherLayer === undefined) return
     if (gameState.weather === 'cloudy') {
         weatherLayer.forEachTile(t => (t.alpha = 0.5))
-        outputGameLog(strParam.GAME_LOG.WEATHER_CROUDY)
+        outputGameLog(commonGameLog.WEATHER_CROUDY)
     }
 }

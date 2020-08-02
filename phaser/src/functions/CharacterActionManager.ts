@@ -1,6 +1,5 @@
 import phaser from 'phaser'
-import { SpriteLayer, SpriteObject } from '../../../server/domain/types/SpriteLayer'
-import { TilePos } from '../../../server/domain/types/TilePos'
+import { SpriteLayer, SpriteObject } from '../../../common/types'
 import { numParam } from '../main'
 
 // グリッド移動
@@ -60,7 +59,7 @@ export const characterWalking = (phaserScene: phaser.Scene, spriteLayer: SpriteL
     camera.startFollow(charaObj.spriteObject)
     camera.setBounds(0, 0, 1000, 1000)
 
-    const charaNewTilePos: TilePos = { tileX: charaObj.x + xDir, tileY: charaObj.y + yDir }
+    const charaNewTilePos: { tileX: number; tileY: number } = { tileX: charaObj.x + xDir, tileY: charaObj.y + yDir }
     charaObj.act.shift()
     charaObj.spriteObject.anims.play(animeCd + '_' + animState, false)
     gridWalkTween(phaserScene, charaObj.spriteObject, xDir, yDir, () => {

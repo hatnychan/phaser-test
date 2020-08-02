@@ -1,10 +1,10 @@
 import phaser from 'phaser'
 import { createSpriteObject } from '../functions/GameObjectManager'
-import { userData, outputGameLog } from '../functions/Util'
-import { SpriteLayer, SpriteObject } from '../../../server/domain/types/SpriteLayer'
+import { outputGameLog } from '../functions/Util'
 import { LoadScene } from './LoadScene'
-import { api, strParam } from '../main'
-import { SpriteData } from '../../../server/domain/types/SpriteData'
+import { userData, strParam, commonGameLog } from '../main'
+import { SpriteData, SpriteLayer, SpriteObject } from '../../../common/types'
+import * as api from '../functions/Api'
 
 export class MenuScene extends phaser.Scene {
     private spriteLayer: SpriteLayer = new Map()
@@ -17,7 +17,7 @@ export class MenuScene extends phaser.Scene {
 
     init(): void {
         console.log('init')
-        outputGameLog(strParam.GAME_LOG.WELCOME)
+        outputGameLog(commonGameLog.WELCOME)
     }
 
     preload(): void {
