@@ -1,7 +1,7 @@
 import GameLog from '../../domain/models/GameLog'
 import FindGameLog from '../../application/usecases/FindGameLog'
 import IGameLogRepository from '../../application/repositories/IGameLogRepository'
-import { GameLogSerializer } from '../serializers/GameLogSerializer'
+import { GameLogSerializer } from '../presenters/GameLogSerializer'
 import { SerializeGameLog } from '../../../common/types'
 
 export class GameLogController {

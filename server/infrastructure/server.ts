@@ -1,7 +1,8 @@
 import express from 'express'
 import http from 'http'
-import { getConnectionOptions, createConnection, BaseEntity, ConnectionOptions, Connection } from 'typeorm'
+import { createConnection } from 'typeorm'
 import router from './router'
+import 'reflect-metadata'
 
 const server = async (): Promise<void> => {
     const app = express()
@@ -12,10 +13,7 @@ const server = async (): Promise<void> => {
     http.createServer(app).listen(process.env.SERVER_PORT)
 
     // --- TypeORMの設定
-    const connectionOptions: ConnectionOptions = await getConnectionOptions()
-    const connection: Connection = await createConnection(connectionOptions)
-    // ActiveRecordパターンでTypeORMを使用する
-    BaseEntity.useConnection(connection)
+    await createConnection()
 
     // Body-Parser
     app.use(express.json())

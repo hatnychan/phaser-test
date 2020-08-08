@@ -4,8 +4,8 @@ import FindAllNumParam from '../../application/usecases/FindAllNumParam'
 import FindAllStrParam from '../../application/usecases/FindAllStrParam'
 import INumParamRepository from '../../application/repositories/INumParamRepository'
 import IStrParamRepository from '../../application/repositories/IStrParamRepository'
-import { NumParamSerializer } from '../serializers/NumParamSerializer'
-import { StrParamSerializer } from '../serializers/StrParamSerializer'
+import { NumParamSerializer } from '../presenters/NumParamSerializer'
+import { StrParamSerializer } from '../presenters/StrParamSerializer'
 import { ParamData, SerializeNumParam, SerializeStrParam } from '../../../common/types'
 
 export class ParamController {
