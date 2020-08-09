@@ -12,7 +12,6 @@ export class StrParamRepository extends IStrParamRepository {
 
     async findAll(): Promise<StrParam[]> {
         this.setRepository()
-        //TODO キャッシュの情報はquery-result-cacheテーブルに保存される。でもポスグレに保存されるのはちょっと微妙かも。後で調査する
         const results: StrParam[] = await this.repository.find({ cache: true })
         return results
     }

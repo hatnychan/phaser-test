@@ -4,7 +4,7 @@ import GameLogController from '../interfaces/controllers/GameLogController'
 import GameLogRepository from '../infrastructure/database/repositories/GameLogRepository'
 import NumParamRepository from '../infrastructure/database/repositories/NumParamRepository'
 import StrParamRepository from '../infrastructure/database/repositories/StrParamRepository'
-import { ParamData, SerializeGameLog } from '../../common/types'
+import { ParamData, SerializedGameLog } from '../../common/types'
 
 const router: express.Router = express.Router()
 const paramController = new ParamController(new NumParamRepository(), new StrParamRepository())
@@ -16,8 +16,8 @@ router.get('/param', async (req: express.Request, res: express.Response) => {
 })
 
 router.post('/gameLog', async (req: express.Request, res: express.Response) => {
-    const gameLog: SerializeGameLog = await gameLogController.findGameLog(req.body)
-    const resData: SerializeGameLog = gameLog
+    const gameLog: SerializedGameLog = await gameLogController.findGameLog(req.body)
+    const resData: SerializedGameLog = gameLog
     res.json(resData)
 })
 

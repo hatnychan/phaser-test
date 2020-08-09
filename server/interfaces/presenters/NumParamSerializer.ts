@@ -1,10 +1,10 @@
 import NumParam from '../../domain/models/NumParam'
 import { groupBy } from '../../../common/commonFunction'
-import { SerializeNumParam } from '../../../common/types'
+import { SerializedNumParam } from '../../../common/types'
 
 export class NumParamSerializer {
-    serialize(data: NumParam[]): SerializeNumParam {
-        const ret: SerializeNumParam = {}
+    serialize(data: NumParam[]): SerializedNumParam {
+        const ret: SerializedNumParam = {}
         groupBy(data, param => param.paramCd).forEach(([group, groupData]) => {
             ret[group] = {}
             groupData.forEach(param => {

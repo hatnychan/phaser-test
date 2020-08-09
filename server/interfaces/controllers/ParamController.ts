@@ -6,7 +6,7 @@ import INumParamRepository from '../../application/repositories/INumParamReposit
 import IStrParamRepository from '../../application/repositories/IStrParamRepository'
 import { NumParamSerializer } from '../presenters/NumParamSerializer'
 import { StrParamSerializer } from '../presenters/StrParamSerializer'
-import { ParamData, SerializeNumParam, SerializeStrParam } from '../../../common/types'
+import { ParamData, SerializedNumParam, SerializedStrParam } from '../../../common/types'
 
 export class ParamController {
     private numParamSerializer: NumParamSerializer
@@ -30,8 +30,8 @@ export class ParamController {
             useCaseStrParam.execute()
         ])
 
-        const serializedNumParam: SerializeNumParam = this.numParamSerializer.serialize(results[0])
-        const serializedStrParam: SerializeStrParam = this.strParamSerializer.serialize(results[1])
+        const serializedNumParam: SerializedNumParam = this.numParamSerializer.serialize(results[0])
+        const serializedStrParam: SerializedStrParam = this.strParamSerializer.serialize(results[1])
         const ret: ParamData = [serializedNumParam, serializedStrParam]
         return ret
     }

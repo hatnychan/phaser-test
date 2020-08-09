@@ -2,7 +2,7 @@ import GameLog from '../../domain/models/GameLog'
 import FindGameLog from '../../application/usecases/FindGameLog'
 import IGameLogRepository from '../../application/repositories/IGameLogRepository'
 import { GameLogSerializer } from '../presenters/GameLogSerializer'
-import { SerializeGameLog } from '../../../common/types'
+import { SerializedGameLog } from '../../../common/types'
 
 export class GameLogController {
     private gameLogSerializer: GameLogSerializer
@@ -13,10 +13,10 @@ export class GameLogController {
         this.gameLogRepository = gameLogRepository
     }
 
-    async findGameLog(cond: { [x: string]: string }): Promise<SerializeGameLog> {
+    async findGameLog(cond: { [x: string]: string }): Promise<SerializedGameLog> {
         const useCaseGameLog: FindGameLog = new FindGameLog(this.gameLogRepository)
         const results: GameLog[] = await useCaseGameLog.execute(cond)
-        const ret: SerializeGameLog = this.gameLogSerializer.serialize(results)
+        const ret: SerializedGameLog = this.gameLogSerializer.serialize(results)
         return ret
     }
 }

@@ -22,21 +22,21 @@ export type MapPos = {
 
 export type MapLayer = Map<string, phaser.Tilemaps.DynamicTilemapLayer>
 
-export type ParamData = [SerializeNumParam, SerializeStrParam]
+export type ParamData = [SerializedNumParam, SerializedStrParam]
 
-export type SerializeNumParam = {
+export type SerializedNumParam = {
     [x: string]: {
         [x: string]: number
     }
 }
 
-export type SerializeStrParam = {
+export type SerializedStrParam = {
     [x: string]: {
         [x: string]: string
     }
 }
 
-export type SerializeGameLog = {
+export type SerializedGameLog = {
     [x: string]: {
         [x: string]: string
     }

@@ -6,6 +6,12 @@ import GameLogEntity from '../../../infrastructure/database/entities/GameLog'
 export class GameLogRepository extends IGameLogRepository {
     private repository!: Repository<GameLog>
 
+    /* 
+    TODO 本当はgetRepositoryをメンバ変数やコンストラクターに入れたいんだけどエラーになってしまう。
+    多分server.tsでcreateConnectionされる前に実行されてしまうためだと思う。解決策無いか調べてもよく分からん。
+    各メソッド内でgetRepositoryすれば問題ないのでとりあえずsetRepositoryメソッドを作って実行するようにした。
+    時間あればもっと良い方法を模索したい。
+    */
     private setRepository(): void {
         if (this.repository === undefined) this.repository = getRepository(GameLogEntity)
     }

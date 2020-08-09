@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { UserData, MapData, SpriteData, ParamData, SerializeGameLog } from '../../../common/types'
+import { UserData, MapData, SpriteData, ParamData, SerializedGameLog } from '../../../common/types'
 
 // ユーザーデータ取得
 export const getUserData = (userId: string): Promise<UserData> => {
@@ -14,10 +14,10 @@ export const getParamData = (): Promise<ParamData> => {
 }
 
 // ゲームログ情報取得
-export const getGameLog = (cond: { [x: string]: string }): Promise<SerializeGameLog> => {
-    const ret: Promise<SerializeGameLog> = axios
-        .post<SerializeGameLog>('/api/gameLog', cond)
-        .then((res): SerializeGameLog => res.data)
+export const getGameLog = (cond: { [x: string]: string }): Promise<SerializedGameLog> => {
+    const ret: Promise<SerializedGameLog> = axios
+        .post<SerializedGameLog>('/api/gameLog', cond)
+        .then((res): SerializedGameLog => res.data)
     return ret
 }
 

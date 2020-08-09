@@ -1,10 +1,10 @@
 import StrParam from '../../domain/models/StrParam'
 import { groupBy } from '../../../common/commonFunction'
-import { SerializeStrParam } from '../../../common/types'
+import { SerializedStrParam } from '../../../common/types'
 
 export class StrParamSerializer {
-    serialize(data: StrParam[]): SerializeStrParam {
-        const ret: SerializeStrParam = {}
+    serialize(data: StrParam[]): SerializedStrParam {
+        const ret: SerializedStrParam = {}
         groupBy(data, param => param.paramCd).forEach(([group, groupData]) => {
             ret[group] = {}
             groupData.forEach(param => {

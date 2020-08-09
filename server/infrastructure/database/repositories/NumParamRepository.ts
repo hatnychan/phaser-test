@@ -12,7 +12,6 @@ export class NumParamRepository extends INumParamRepository {
 
     async findAll(): Promise<NumParam[]> {
         this.setRepository()
-        //TODO キャッシュの情報はquery-result-cacheテーブルに保存される。でもポスグレに保存されるのはちょっと微妙かも。後で調査する
         const results: NumParam[] = await this.repository.find({ cache: true })
         return results
     }

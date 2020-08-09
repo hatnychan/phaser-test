@@ -1,13 +1,13 @@
 import phaser from 'phaser'
-import { ParamData, SerializeNumParam, SerializeStrParam } from '../../common/types'
+import { ParamData, SerializedNumParam, SerializedStrParam } from '../../common/types'
 import * as api from './functions/Api'
 import { LoadScene } from './scenes/LoadScene'
 import { MenuScene } from './scenes/MenuScene'
 import { PlayScene } from './scenes/PlayScene'
 import { UserData } from '../../common/types'
 
-export let numParam: SerializeNumParam
-export let strParam: SerializeStrParam
+export let numParam: SerializedNumParam
+export let strParam: SerializedStrParam
 export let userData: UserData
 export let commonGameLog: { [x: string]: string }
 
