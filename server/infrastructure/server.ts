@@ -1,7 +1,7 @@
 import express from 'express'
 import http from 'http'
 import https from 'https'
-import typeorm from 'typeorm'
+import { createConnection } from 'typeorm'
 import apiRouter from './apiRouter'
 import authRouter from './authRouter'
 import passport from 'passport'
@@ -37,7 +37,7 @@ const server = async (): Promise<void> => {
     }
 
     // --- TypeORMの設定
-    await typeorm.createConnection()
+    await createConnection()
 
     // Body-Parser
     app.use(express.json())
