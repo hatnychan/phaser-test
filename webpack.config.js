@@ -1,7 +1,7 @@
 module.exports = {
     // モード値を production に設定すると最適化された状態で、
     // development に設定するとソースマップ有効でJSファイルが出力される
-    mode: 'development',
+    mode: `${process.env.NODE_ENV}`,
 
     // メインとなるJavaScriptファイル（エントリーポイント）
     entry: {
@@ -27,7 +27,7 @@ module.exports = {
     },
     devServer: {
         host: '0.0.0.0',
-        port: 8080,
+        port: process.env.SERVER_PORT,
         contentBase: __dirname + '/phaser/dist' // 重要：outputのpathと一致させないとwebpack-dev-serverの自動ビルドが動かない
     },
     devtool: 'inline-source-map'

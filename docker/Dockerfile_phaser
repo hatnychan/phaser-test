@@ -12,7 +12,9 @@ RUN  apt update \
   iputils-ping \
   ssh \
   nodejs \
-  npm 
+  npm \
+  curl \
+  libnss3-tools
 
 # aptだと古いnodejsとnpmしか入らないのでnで入れ直す
 RUN npm install n -g

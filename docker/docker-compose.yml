@@ -27,30 +27,44 @@ services:
         - GIT_USER_EMAIL=${GIT_USER_EMAIL}
     ports:
       - "8080:8080"
-      - "8000:80"
-      - "8022:22"
+      - "80:80"
+      - "22:22"
+      - "443:443"
     tty: #-tに対応 
       true
     stdin_open: #-iに対応 
       true
     user: #rootとしてログイン(userとしてログインするとsshできない。。。)
-      root
+      user
     depends_on: #コンテナ立ち上げの起動順を制御する
       - db
     environment:
-      - GIT_URL=${GIT_URL}
-      - GIT_PROJECT=${GIT_PROJECT}
+      - NODE_ENV=${NODE_ENV}
+      - SERVER_URL=${SERVER_URL}
+      - SERVER_PORT=${SERVER_PORT}
       - DB_TYPE=${DB_TYPE}
       - DB_HOST=${DB_HOST}
       - DB_PORT=${DB_PORT}
       - DB_USER=${DB_USER}
       - DB_PASS=${DB_PASS}
       - DB_NAME=${DB_NAME}
-      - SERVER_PORT=${SERVER_PORT}
+      - GIT_URL=${GIT_URL}
+      - GIT_PROJECT=${GIT_PROJECT}
+      - OPEN_WEATHER_MAP_API_KEY=${OPEN_WEATHER_MAP_API_KEY}
+      - TWITTER_API_KEY=${TWITTER_API_KEY}
+      - TWITTER_API_KEY_SECRET=${TWITTER_API_KEY_SECRET}
     command: >
       bash -c "
       git clone ${GIT_URL} /home/user/${GIT_PROJECT};
       npm install --prefix=/home/user/${GIT_PROJECT};
+      echo user | sh -c "$(curl -fsSL https://raw.githubusercontent.com/Linuxbrew/install/master/install.sh)";
+      test -d ~/.linuxbrew && eval $(~/.linuxbrew/bin/brew shellenv);
+      test -d /home/linuxbrew/.linuxbrew && eval $(/home/linuxbrew/.linuxbrew/bin/brew shellenv);
+      test -r ~/.bash_profile && echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.bash_profile;
+      echo "eval \$($(brew --prefix)/bin/brew shellenv)" >>~/.profile;
+      brew install mkcert;
+      mkcert -install;
+      mkcert -cert-file ./server_certificate/localhost.crt.pem -key-file ./ server_certificate/localhost.key.pem localhost;
       npm run build --prefix=/home/user/${GIT_PROJECT};
       npm run upMigration --prefix=/home/user/${GIT_PROJECT};
       /etc/init.d/ssh start;

@@ -1,10 +1,10 @@
 import express from 'express'
-import ParamController from '../interfaces/controllers/ParamController'
-import GameLogController from '../interfaces/controllers/GameLogController'
-import GameLogRepository from '../infrastructure/database/repositories/GameLogRepository'
-import NumParamRepository from '../infrastructure/database/repositories/NumParamRepository'
-import StrParamRepository from '../infrastructure/database/repositories/StrParamRepository'
 import { ParamData, SerializedGameLog } from '../../common/types'
+import ParamController from '../interfaces/controllers/ParamController'
+import NumParamRepository from './database/repositories/NumParamRepository'
+import StrParamRepository from './database/repositories/StrParamRepository'
+import GameLogController from '../interfaces/controllers/GameLogController'
+import GameLogRepository from './database/repositories/GameLogRepository'
 
 const router: express.Router = express.Router()
 const paramController = new ParamController(new NumParamRepository(), new StrParamRepository())

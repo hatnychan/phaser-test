@@ -1,6 +1,6 @@
 import phaser from 'phaser'
 import * as objMan from '../functions/GameObjectManager'
-import { userData, commonGameLog, strParam } from '../main'
+import { userData, commonGameLog } from '../main'
 import { GameState, MapLayer, SpriteLayer, SpriteObject } from '../../../common/types'
 import { gridWalkTween, playCharacterAction } from '../functions/CharacterActionManager'
 import { outputGameLog } from '../functions/Util'
