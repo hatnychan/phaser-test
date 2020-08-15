@@ -24,10 +24,9 @@ const server = async (): Promise<void> => {
       https.portの設定や証明書がなくても、普通にアプリをpushすればhttpsのURLが使えるようになる。
     */
     if (app.get('env') === 'development') {
-        const serverCertificateDir = '/home/user/' + `${process.env.GIT_PROJECT}` + '/server_certificate'
         const options = {
-            cert: fs.readFileSync(serverCertificateDir + '/localhost.crt.pem'),
-            key: fs.readFileSync(serverCertificateDir + '/localhost.key.pem')
+            cert: fs.readFileSync('/home/user/server_certificate/localhost.crt.pem'),
+            key: fs.readFileSync('/home/user/server_certificate/localhost.key.pem')
         }
         https.createServer(options, app).listen(process.env.SERVER_PORT)
     } else if (app.get('env') === 'staging') {

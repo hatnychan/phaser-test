@@ -5,16 +5,13 @@ RUN echo "now building..."
 RUN  apt update \
   && apt install -y \
   git \
-  unzip \
   vim \
   sudo \
   iproute2 \
   iputils-ping \
   ssh \
   nodejs \
-  npm \
-  curl \
-  libnss3-tools
+  npm 
 
 # aptだと古いnodejsとnpmしか入らないのでnで入れ直す
 RUN npm install n -g

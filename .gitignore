@@ -2,4 +2,3 @@ node_modules/
 .DS_Store
 ._*
 phaser/dist/main.js
-server_certificate/
