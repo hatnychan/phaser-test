@@ -1,12 +1,6 @@
 import phaser from 'phaser'
-
-export type GameState = {
-    isWalking: boolean
-    isTalking: boolean
-    isCreateComplete: boolean
-    weather: string
-    timeZone: string
-}
+import { SerializedNumParam } from './SerializedNumParam'
+import { SerializedStrParam } from './SerializedStrParam'
 
 export type MapData = [MapImage, MapPos]
 
@@ -23,24 +17,6 @@ export type MapPos = {
 export type MapLayer = Map<string, phaser.Tilemaps.DynamicTilemapLayer>
 
 export type ParamData = [SerializedNumParam, SerializedStrParam]
-
-export type SerializedNumParam = {
-    [x: string]: {
-        [x: string]: number
-    }
-}
-
-export type SerializedStrParam = {
-    [x: string]: {
-        [x: string]: string
-    }
-}
-
-export type SerializedGameLog = {
-    [x: string]: {
-        [x: string]: string
-    }
-}
 
 export type SpriteData = [SpriteTextureConfig[], SpriteActConfig[]]
 
@@ -68,9 +44,4 @@ export type SpriteObject = {
     y: number
     act: string[]
     isAction: boolean
-}
-
-export type UserData = {
-    userId: string
-    scene: string
 }

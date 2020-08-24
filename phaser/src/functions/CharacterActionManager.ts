@@ -1,6 +1,6 @@
 import phaser from 'phaser'
-import { SpriteLayer, SpriteObject } from '../../../common/types'
-import { numParam } from '../main'
+import { SpriteLayer, SpriteObject } from '../../../server/interfaces/presenters/types'
+import * as api from './Api'
 
 // グリッド移動
 export const gridWalkTween = (
@@ -16,12 +16,12 @@ export const gridWalkTween = (
         // X座標の移動を設定
         x: {
             getStart: (): number => target.x,
-            getEnd: (): number => target.x + numParam.DISPLAY_TILE_MAP_SIZE.VALUE * xDir
+            getEnd: (): number => target.x + api.numParam.DISPLAY_TILE_MAP_SIZE.VALUE * xDir
         },
         // X座標の移動を設定
         y: {
             getStart: (): number => target.y,
-            getEnd: (): number => target.y + numParam.DISPLAY_TILE_MAP_SIZE.VALUE * yDir
+            getEnd: (): number => target.y + api.numParam.DISPLAY_TILE_MAP_SIZE.VALUE * yDir
         },
         // アニメーションの時間
         duration: 300,

@@ -1,22 +1,19 @@
 import GameLog from '../../domain/models/GameLog'
 import FindGameLog from '../../application/usecases/FindGameLog'
 import IGameLogRepository from '../../application/repositories/IGameLogRepository'
-import { GameLogSerializer } from '../presenters/GameLogSerializer'
-import { SerializedGameLog } from '../../../common/types'
+import { SerializedGameLog } from '../presenters/SerializedGameLog'
 
 export class GameLogController {
-    private gameLogSerializer: GameLogSerializer
     private gameLogRepository: IGameLogRepository
 
     constructor(gameLogRepository: IGameLogRepository) {
-        this.gameLogSerializer = new GameLogSerializer()
         this.gameLogRepository = gameLogRepository
     }
 
     async findGameLog(cond: { [x: string]: string }): Promise<SerializedGameLog> {
-        const useCaseGameLog: FindGameLog = new FindGameLog(this.gameLogRepository)
-        const results: GameLog[] = await useCaseGameLog.execute(cond)
-        const ret: SerializedGameLog = this.gameLogSerializer.serialize(results)
+        const findGameLog: FindGameLog = new FindGameLog(this.gameLogRepository)
+        const results: GameLog[] = await findGameLog.execute(cond)
+        const ret: SerializedGameLog = new SerializedGameLog(results)
         return ret
     }
 }

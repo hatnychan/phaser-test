@@ -1,8 +1,12 @@
 import express from 'express'
 import passport from 'passport'
 import passportTwitter from 'passport-twitter'
+import UserController from '../interfaces/controllers/UserController'
+import UserRepository from './database/repositories/UserRepository'
+import User from '../domain/models/User'
 
 const router: express.Router = express.Router()
+const userController = new UserController(new UserRepository())
 
 /* 
   passport.use(new passportTwitter.Strategy())によって認証成功時reqにデータがセットされる。
@@ -29,21 +33,40 @@ passport.use(
             done: (error: any, user?: any) => void
         ): void => {
             // 認証成功後に走る処理：要求引数(req)に渡したい値をdoneの第2引数に入れる。
+            // TODO saltでぐちゃっとする。
             return done(null, { accessToken })
         }
     )
 )
 
-passport.serializeUser((user, done) => {
+passport.serializeUser((accessToken, done) => {
+    done(null, accessToken)
+})
+
+passport.deserializeUser(async (sesUser: { accessToken: string }, done) => {
+    const userId: string = sesUser.accessToken
+    const userArray: User[] = await userController.findUser({ userId: userId })
+    let user: User
+    if (userArray.length === 0) {
+        user = new User()
+        user.userId = userId
+        user.userName = '${initName}'
+        user.location = '${initLocation}'
+        await userController.createUser(user)
+    } else {
+        user = userArray[0]
+    }
     done(null, user)
 })
 
-passport.deserializeUser((user, done) => {
-    done(null, user)
+router.get('/logout', async (req: express.Request, res: express.Response) => {
+    req.logout() // セッション削除
+    res.redirect('/')
 })
 
 router.get('/:provider', async (req: express.Request, res: express.Response, next: express.NextFunction) => {
     const provider: string = req.params.provider
+    // TODO providerがtwitterかgoogleかどうかの判定を入れる。
     // TwitterやGoogle認証には2つのルーティングが必要。最初のルーティングで許可しますか？の画面に飛ばす。
     // 許可後/callbackにリダイレクトさせる。
     passport.authenticate(provider)(req, res, next)
@@ -61,10 +84,6 @@ router.get('/:provider/callback', async (req: express.Request, res: express.Resp
         successFlash: true,
         session: true
     })(req, res, next)
-})
-
-router.get('/:provider/logout', async (req: express.Request, res: express.Response) => {
-    // await authorizationController.logout()
 })
 
 export default router

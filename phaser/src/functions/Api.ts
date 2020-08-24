@@ -1,23 +1,43 @@
 import axios from 'axios'
-import { UserData, MapData, SpriteData, ParamData, SerializedGameLog } from '../../../common/types'
-
-// ユーザーデータ取得
-export const getUserData = (userId: string): Promise<UserData> => {
-    const data = { userId: userId, scene: 'MENU' }
-    return new Promise(resolve => resolve(data))
-}
+import { MapData, SpriteData, ParamData } from '../../../server/interfaces/presenters/types'
+import { User } from '../../../server/domain/models/User'
+import { SerializedGameLog } from '../../../server/interfaces/presenters/SerializedGameLog'
+import { SerializedNumParam } from '../../../server/interfaces/presenters/SerializedNumParam'
+import { SerializedStrParam } from '../../../server/interfaces/presenters/SerializedStrParam'
+import { GameState } from '../../../server/interfaces/presenters/GameState'
 
 // パラメータデータ取得
-export const getParamData = (): Promise<ParamData> => {
+let paramData: ParamData
+export let numParam: SerializedNumParam
+export let strParam: SerializedStrParam
+export const getParamData = async (): Promise<ParamData> => {
+    if (paramData != undefined) return paramData
     const ret: Promise<ParamData> = axios.get<ParamData>('/api/param').then((res): ParamData => res.data)
+    paramData = await ret
+    numParam = paramData[0]
+    strParam = paramData[1]
     return ret
 }
 
 // ゲームログ情報取得
-export const getGameLog = (cond: { [x: string]: string }): Promise<SerializedGameLog> => {
+export let gameLog: SerializedGameLog
+export const getGameLog = async (cond: { [x: string]: string }): Promise<SerializedGameLog> => {
+    if (gameLog != undefined) {
+        const isCdExist = gameLog[cond.gameLogCd] != undefined
+        if (isCdExist) return gameLog
+    }
     const ret: Promise<SerializedGameLog> = axios
         .post<SerializedGameLog>('/api/gameLog', cond)
         .then((res): SerializedGameLog => res.data)
+    gameLog = await ret
+    return ret
+}
+
+// セッションユーザー情報取得
+export let sesUser: User
+export const getSessionUser = async (): Promise<User> => {
+    const ret: Promise<User> = axios.get<User>('/api/sessionUser').then((res): User => res.data)
+    sesUser = await ret
     return ret
 }
 
@@ -177,8 +197,7 @@ export const spriteDataPlay: SpriteData = [
     ]
 ]
 
-export const getMapData = (userData: UserData): Promise<MapData> => {
-    userData
+export const getMapData = (): Promise<MapData> => {
     const data: MapData = mapData
     return new Promise(resolve => resolve(data))
 }
@@ -314,11 +333,12 @@ export const characterActionAlgo = (): { cumUtilityMap: number[][]; actArray: st
     return { cumUtilityMap: cumUtilityMap, actArray: actArray }
 }
 
-export const getSpriteData = (userData: UserData): Promise<SpriteData> => {
+export const getSpriteData = (): Promise<SpriteData> => {
     let data: SpriteData
-    if (userData.scene === 'MENU') {
+    const gameState: GameState = GameState.instance
+    if (gameState.scene === 'MENU') {
         data = spriteDataMenu
-    } else if (userData.scene === 'PLAY') {
+    } else if (gameState.scene === 'PLAY') {
         const aaa = characterActionAlgo()
         console.log(aaa.cumUtilityMap)
         console.log(aaa.actArray)

@@ -3,6 +3,8 @@ export class GameLog {
 
     key!: string
 
+    lang!: string
+
     value!: string
 }
 export default GameLog

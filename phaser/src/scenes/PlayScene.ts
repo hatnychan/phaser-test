@@ -1,20 +1,14 @@
 import phaser from 'phaser'
 import * as objMan from '../functions/GameObjectManager'
-import { userData, commonGameLog } from '../main'
-import { GameState, MapLayer, SpriteLayer, SpriteObject } from '../../../common/types'
+import { MapLayer, SpriteLayer, SpriteObject } from '../../../server/interfaces/presenters/types'
 import { gridWalkTween, playCharacterAction } from '../functions/CharacterActionManager'
-import { outputGameLog } from '../functions/Util'
 import * as api from '../functions/Api'
+import { outputGameLog } from '../functions/Util'
+import { GameState } from '../../../server/interfaces/presenters/GameState'
 
 export class PlayScene extends phaser.Scene {
     // ゲーム状態
-    private gameState: GameState = {
-        isWalking: false,
-        isTalking: false,
-        isCreateComplete: false,
-        weather: 'cloudy',
-        timeZone: 'night'
-    }
+    private gameState: GameState = GameState.instance
 
     // マップ系オブジェクト
     private tileMapLayer: MapLayer = new Map()
@@ -37,19 +31,23 @@ export class PlayScene extends phaser.Scene {
 
     init(): void {
         console.log('init')
+        const commonGameLog = api.gameLog.COMMON
         outputGameLog(commonGameLog.WORLD_HAS_CONSTRUCT)
+        this.preload(true)
     }
 
-    preload(): void {
+    preload(isPreFuncComplete = false): void {
+        if (!isPreFuncComplete) return
         console.log('preload')
+        this.create(undefined, true)
     }
 
-    async create(): Promise<void> {
-        // mapレイヤー
-        // キャラクターオブジェクト
+    async create(data?: object, isPreFuncComplete = false): Promise<void> {
+        if (!isPreFuncComplete) return
+        // map、キャラクターオブジェクト
         await Promise.all([
-            objMan.createMapObject(this, userData, this.tileMapLayer, this.eventMapLayer),
-            objMan.createSpriteObject(this, userData, this.spriteLayer, this.tileMapLayer)
+            objMan.createMapObject(this, this.tileMapLayer, this.eventMapLayer),
+            objMan.createSpriteObject(this, this.spriteLayer, this.tileMapLayer)
         ])
 
         // 文章フレーム
@@ -61,7 +59,7 @@ export class PlayScene extends phaser.Scene {
         // カーソル
         this.cursors = this.input.keyboard.createCursorKeys()
         // マップイベント接触判定設定
-        objMan.setCollisonMapEvent(this, this.eventMapLayer, this.spriteLayer, this.gameState)
+        objMan.setCollisonMapEvent(this, this.eventMapLayer, this.spriteLayer)
 
         this.gameState.isCreateComplete = true
     }
@@ -75,7 +73,7 @@ export class PlayScene extends phaser.Scene {
         playCharacterAction(this, this.spriteLayer)
 
         // 天気描画更新
-        objMan.updateWeatherSituation(this.gameState, this.tileMapLayer.get('WEATHER'))
+        objMan.updateWeatherSituation(this.tileMapLayer.get('WEATHER'))
 
         // const CONTROL_CHARA = 'EYEBALL1'
         // let xDir = 0 // x座標の移動方向を表すための変数

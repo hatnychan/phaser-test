@@ -1,36 +1,33 @@
 import phaser from 'phaser'
-import { numParam, strParam, commonGameLog } from '../main'
 import { LoadScene } from '../scenes/LoadScene'
 import { outputGameLog } from '../functions/Util'
 import * as api from './Api'
 import {
     MapData,
     MapPos,
-    UserData,
     SpriteData,
     SpriteActConfig,
     SpriteTextureConfig,
     SpriteLayer,
-    MapLayer,
-    GameState
-} from '../../../common/types'
+    MapLayer
+} from '../../../server/interfaces/presenters/types'
+import { GameState } from '../../../server/interfaces/presenters/GameState'
 
 // マップを表示する
 export const createMapObject = async (
     phaserScene: phaser.Scene,
-    userData: UserData,
     tileMapLayer: MapLayer,
     eventMapLayer: MapLayer
 ): Promise<void> => {
-    const mapData: MapData = await api.getMapData(userData)
+    const mapData: MapData = await api.getMapData()
     const mapPos: MapPos = mapData[1]
 
     // map作成
     mapPos.tilePos.forEach((value, key) => {
         const tileMap: phaser.Tilemaps.Tilemap = phaserScene.make.tilemap({
             data: value,
-            tileWidth: numParam.DISPLAY_TILE_MAP_SIZE.VALUE,
-            tileHeight: numParam.DISPLAY_TILE_MAP_SIZE.VALUE
+            tileWidth: api.numParam.DISPLAY_TILE_MAP_SIZE.VALUE,
+            tileHeight: api.numParam.DISPLAY_TILE_MAP_SIZE.VALUE
         })
         const tileSet: phaser.Tilemaps.Tileset = tileMap.addTilesetImage(key)
         const dynamicTileMapLayer: phaser.Tilemaps.DynamicTilemapLayer = tileMap.createDynamicLayer(0, tileSet, 0, 0)
@@ -41,8 +38,8 @@ export const createMapObject = async (
     mapPos.eventPos.forEach((value, key) => {
         const eventMap: phaser.Tilemaps.Tilemap = phaserScene.make.tilemap({
             data: value,
-            tileWidth: numParam.DISPLAY_TILE_MAP_SIZE.VALUE,
-            tileHeight: numParam.DISPLAY_TILE_MAP_SIZE.VALUE
+            tileWidth: api.numParam.DISPLAY_TILE_MAP_SIZE.VALUE,
+            tileHeight: api.numParam.DISPLAY_TILE_MAP_SIZE.VALUE
         })
         const eventSet: phaser.Tilemaps.Tileset = eventMap.addTilesetImage('COMMON')
         const dynamicEventMapLayer: phaser.Tilemaps.DynamicTilemapLayer = eventMap.createDynamicLayer(0, eventSet, 0, 0)
@@ -55,7 +52,7 @@ export const createMapObject = async (
     const weatherSet: phaser.Tilemaps.Tileset = weatherMap.addTilesetImage('COMMON')
     const weatherLayer: phaser.Tilemaps.DynamicTilemapLayer = weatherMap
         .createBlankDynamicLayer('WEATHER', weatherSet)
-        .fill(numParam.BLACK_TILE.INDEX)
+        .fill(api.numParam.BLACK_TILE.INDEX)
     tileMapLayer.set('WEATHER', weatherLayer)
 }
 
@@ -91,11 +88,10 @@ const createSpriteAnimation = (
 // 与えられていない場合はワールド座標で表示する。
 export const createSpriteObject = async (
     phaserScene: phaser.Scene,
-    userData: UserData,
     spriteLayer: SpriteLayer,
     tileMapLayer?: MapLayer
 ): Promise<void> => {
-    const spriteData: SpriteData = await api.getSpriteData(userData)
+    const spriteData: SpriteData = await api.getSpriteData()
     const spriteConfig: SpriteTextureConfig[] = spriteData[0]
     const spritePos: SpriteActConfig[] = spriteData[1]
     const baseTileMap: phaser.Tilemaps.DynamicTilemapLayer | undefined =
@@ -115,7 +111,7 @@ export const createSpriteObject = async (
             sprite.initAnimeCd,
             sprite.initFrame
         )
-        spriteObject.setDisplaySize(numParam.DISPLAY_TILE_MAP_SIZE.VALUE, numParam.DISPLAY_TILE_MAP_SIZE.VALUE)
+        spriteObject.setDisplaySize(api.numParam.DISPLAY_TILE_MAP_SIZE.VALUE, api.numParam.DISPLAY_TILE_MAP_SIZE.VALUE)
         spriteObject.setOrigin(0)
         spriteLayer.set(sprite.initAnimeCd, {
             spriteObject: spriteObject,
@@ -134,7 +130,7 @@ export const createSpriteObject = async (
 // セリフなどの文章を表示するフレームを作成
 export const createQuoteFrameObject = (phaserScene: phaser.Scene): phaser.GameObjects.Image => {
     const quoteFrame: phaser.GameObjects.Image = phaserScene.add.image(0, 0, 'FRAME') // 生成
-    quoteFrame.setDisplaySize(numParam.SCREEN_SIZE.WIDTH, numParam.SCREEN_SIZE.HEIGHT * 0.2) // リサイズ
+    quoteFrame.setDisplaySize(api.numParam.SCREEN_SIZE.WIDTH, api.numParam.SCREEN_SIZE.HEIGHT * 0.2) // リサイズ
     return quoteFrame
 }
 
@@ -168,8 +164,7 @@ export const createQuoteContainerObject = (
 export const setCollisonMapEvent = (
     phaserScene: phaser.Scene,
     eventMapLayer: MapLayer,
-    spriteLayer: SpriteLayer,
-    gameState: GameState
+    spriteLayer: SpriteLayer
 ): void => {
     eventMapLayer.forEach((eventVal, eventKey) => {
         spriteLayer.forEach((spriteVal, spriteKey) => {
@@ -179,9 +174,10 @@ export const setCollisonMapEvent = (
         eventKey
     })
 
+    const gameState: GameState = GameState.instance
     eventMapLayer.forEach((eventVal, eventKey) => {
         eventVal.setTileIndexCallback(
-            numParam.EVENT_TILE.SCREEN_TRANSITION_INDEX,
+            api.numParam.EVENT_TILE.SCREEN_TRANSITION_INDEX,
             () => {
                 gameState.isCreateComplete = false
                 const cam = phaserScene.cameras.main
@@ -193,7 +189,7 @@ export const setCollisonMapEvent = (
 
                 // 本当はnullが設定できるはずなんだけど(メソッドの説明にも書いてある)、tslintでエラーがでるのでts-ignoreで抑制している。
                 //@ts-ignore
-                eventVal.setTileIndexCallback(numParam.EVENT_TILE.SCREEN_TRANSITION_INDEX, null, phaserScene)
+                eventVal.setTileIndexCallback(api.numParam.EVENT_TILE.SCREEN_TRANSITION_INDEX, null, phaserScene)
             },
             phaserScene
         )
@@ -202,13 +198,14 @@ export const setCollisonMapEvent = (
 }
 
 // 天気によってタイルの状態を変更する。
-export const updateWeatherSituation = (
-    gameState: GameState,
-    weatherLayer?: phaser.Tilemaps.DynamicTilemapLayer
-): void => {
+export const updateWeatherSituation = (weatherLayer?: phaser.Tilemaps.DynamicTilemapLayer): void => {
     if (weatherLayer === undefined) return
+    const commonGameLog = api.gameLog.COMMON
+    const gameState: GameState = GameState.instance
     if (gameState.weather === 'cloudy') {
         weatherLayer.forEachTile(t => (t.alpha = 0.5))
         outputGameLog(commonGameLog.WEATHER_CROUDY)
+    } else {
+        weatherLayer.forEachTile(t => (t.alpha = 0))
     }
 }

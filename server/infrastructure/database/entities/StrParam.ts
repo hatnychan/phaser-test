@@ -8,7 +8,7 @@ export class StrParam {
     @PrimaryColumn({ type: 'varchar', length: 50 })
     key!: string
 
-    @Column({ type: 'varchar', length: 1000, nullable: true })
+    @Column({ type: 'varchar', length: 1000, nullable: false })
     value!: string
 }
 export default StrParam

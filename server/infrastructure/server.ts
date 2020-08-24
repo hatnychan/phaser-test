@@ -43,13 +43,16 @@ const server = async (): Promise<void> => {
     app.use(express.urlencoded({ extended: true }))
 
     // セッションの設定
+    // TODO P261では、express-sessionのcookieにmaxAgeオプションのみを指定しているが、
+    // 本番環境ではセキュリティ対策のために以下のオプションも指定すると良い。
+    // domain, path, secure: true, ※httpOnlyは、デフォルトでtrueのため指定しなくて良い
     app.use(
         session({
             secret: 'secret', // secret属性は指定した文字列を使ってクッキーIDを暗号化しクッキーIDが書き換えらているかを判断する。
             resave: false, // resaveはセッションにアクセスすると上書きされるオプションらしい。今回はfalse.
             saveUninitialized: false, // saveUninitializedは未初期化状態のセッションも保存するようなオプション。今回はfalse.
             cookie: {
-                httpOnly: false, // httpOnlyはクライアント側でクッキー値を見れない、書きかえれないようにするオプション
+                httpOnly: true, // httpOnlyはクライアント側でクッキー値を見れない、書きかえれないようにするオプション
                 secure: true, // secureオプションはhttpsで使用する場合はtrueにする。
                 maxAge: 1000 * 60 * 10 // maxageはセッションの消滅時間。単位はミリ秒。ミリ秒は千分の一秒なので1000 * 60 * 30で30分と指定。
             }
