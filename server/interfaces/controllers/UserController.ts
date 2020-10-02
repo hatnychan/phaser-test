@@ -1,7 +1,8 @@
 import User from '../../domain/models/User'
 import IUserRepository from '../../application/repositories/IUserRepository'
-import FindUser from '../../application/usecases/FindUser'
-import CreateUser from '../../application/usecases/CreateUser'
+import FindOneUser from '../../application/usecases/FindOneUser'
+import InsertUser from '../../application/usecases/InsertUser'
+import UpdateUser from '../../application/usecases/UpdateUser'
 
 export class UserController {
     private UserRepository: IUserRepository
@@ -10,15 +11,20 @@ export class UserController {
         this.UserRepository = UserRepository
     }
 
-    async findUser(cond: { [x: string]: string }): Promise<User[]> {
-        const findUser: FindUser = new FindUser(this.UserRepository)
-        const ret: User[] = await findUser.execute(cond)
+    async findOneUser(cond: { userId: string }): Promise<User | undefined> {
+        const findOneUser: FindOneUser = new FindOneUser(this.UserRepository)
+        const ret: User | undefined = await findOneUser.execute(cond)
         return ret
     }
 
-    async createUser(user: User): Promise<void> {
-        const createUser: CreateUser = new CreateUser(this.UserRepository)
-        await createUser.execute(user)
+    async insertUser(user: User): Promise<void> {
+        const insertUser: InsertUser = new InsertUser(this.UserRepository)
+        await insertUser.execute(user)
+    }
+
+    async updateUser(cond: { userId: string }, updateProp: { [x: string]: string }): Promise<void> {
+        const updateUser: UpdateUser = new UpdateUser(this.UserRepository)
+        await updateUser.execute(cond, updateProp)
     }
 }
 export default UserController

@@ -7,7 +7,7 @@ export class StrParamRepository extends IStrParamRepository {
     private repository!: Repository<StrParam>
 
     private setRepository(): void {
-        if (this.repository === undefined) this.repository = getRepository(StrParamEntity)
+        if (!this.repository) this.repository = getRepository(StrParamEntity)
     }
 
     async findAll(): Promise<StrParam[]> {

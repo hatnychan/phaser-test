@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios, { AxiosError, AxiosResponse } from 'axios'
 import { MapData, SpriteData, ParamData } from '../../../server/interfaces/presenters/types'
 import { User } from '../../../server/domain/models/User'
 import { SerializedGameLog } from '../../../server/interfaces/presenters/SerializedGameLog'
@@ -11,8 +11,8 @@ let paramData: ParamData
 export let numParam: SerializedNumParam
 export let strParam: SerializedStrParam
 export const getParamData = async (): Promise<ParamData> => {
-    if (paramData != undefined) return paramData
-    const ret: Promise<ParamData> = axios.get<ParamData>('/api/param').then((res): ParamData => res.data)
+    if (paramData) return paramData
+    const ret: Promise<ParamData> = axios.get<ParamData>('/api/param').then(res => res.data)
     paramData = await ret
     numParam = paramData[0]
     strParam = paramData[1]
@@ -22,13 +22,10 @@ export const getParamData = async (): Promise<ParamData> => {
 // ゲームログ情報取得
 export let gameLog: SerializedGameLog
 export const getGameLog = async (cond: { [x: string]: string }): Promise<SerializedGameLog> => {
-    if (gameLog != undefined) {
-        const isCdExist = gameLog[cond.gameLogCd] != undefined
-        if (isCdExist) return gameLog
+    if (gameLog) {
+        if (gameLog[cond.gameLogCd]) return gameLog
     }
-    const ret: Promise<SerializedGameLog> = axios
-        .post<SerializedGameLog>('/api/gameLog', cond)
-        .then((res): SerializedGameLog => res.data)
+    const ret: Promise<SerializedGameLog> = axios.post<SerializedGameLog>('/api/gameLog', cond).then(res => res.data)
     gameLog = await ret
     return ret
 }
@@ -36,9 +33,18 @@ export const getGameLog = async (cond: { [x: string]: string }): Promise<Seriali
 // セッションユーザー情報取得
 export let sesUser: User
 export const getSessionUser = async (): Promise<User> => {
-    const ret: Promise<User> = axios.get<User>('/api/sessionUser').then((res): User => res.data)
+    const ret: Promise<User> = axios.get<User>('/api/sesUser').then(res => res.data)
     sesUser = await ret
     return ret
+}
+
+// ログインユーザー情報更新
+// TODO: セキュリティ面は全然考えてない。クロスサイトなんちゃらとか
+export const updateSesUser = async (cond: { [x: string]: string }): Promise<number> => {
+    const res: AxiosResponse<void> = (await axios
+        .post<void>('/api/updateSesUser', cond)
+        .catch((err: AxiosError<void>) => err.response)) as AxiosResponse<void>
+    return res.status
 }
 
 // userデータを元に絞る 上下左右のマップ情報も
@@ -210,7 +216,7 @@ const addNextTiletoArray = (
     cumUtility: number,
     toCalcArray: { map: number; x: number; y: number; preCumUtility: number }[]
 ): void => {
-    if (cumUtilityMap[y] != undefined && cumUtilityMap[y][x] != undefined && cumUtilityMap[y][x] === 0) {
+    if (cumUtilityMap[y] && cumUtilityMap[y][x] === 0) {
         const nextUtilityTile = { map: cumUtilityMap[y][x], x: x, y: y, preCumUtility: cumUtility }
         const existtoCalcArray = toCalcArray.filter(nut => nut.y === y && nut.x === x)
 
@@ -287,10 +293,10 @@ export const characterActionAlgo = (): { cumUtilityMap: number[][]; actArray: st
 
         // ゴールとその四方のタイルがすべて計算されれば計算終了
         const endCond1 = cumUtilityMap[start.y][start.x] > 0
-        const endCond2 = cumUtilityMap[start.y - 1] === undefined || cumUtilityMap[start.y - 1][start.x] > 0
-        const endCond3 = cumUtilityMap[start.y + 1] === undefined || cumUtilityMap[start.y + 1][start.x] > 0
-        const endCond4 = cumUtilityMap[start.y][start.x - 1] === undefined || cumUtilityMap[start.y][start.x - 1] > 0
-        const endCond5 = cumUtilityMap[start.y][start.x + 1] === undefined || cumUtilityMap[start.y][start.x + 1] > 0
+        const endCond2 = !cumUtilityMap[start.y - 1] || cumUtilityMap[start.y - 1][start.x] > 0
+        const endCond3 = !cumUtilityMap[start.y + 1] || cumUtilityMap[start.y + 1][start.x] > 0
+        const endCond4 = !cumUtilityMap[start.y][start.x - 1] || cumUtilityMap[start.y][start.x - 1] > 0
+        const endCond5 = !cumUtilityMap[start.y][start.x + 1] || cumUtilityMap[start.y][start.x + 1] > 0
         if (endCond1 && endCond2 && endCond3 && endCond4 && endCond5) isUtilityLoop = false
 
         // 四方のタイルを次回計算予定配列に入れる
@@ -315,13 +321,13 @@ export const characterActionAlgo = (): { cumUtilityMap: number[][]; actArray: st
         currentAct = { utility: cumUtilityMap[y][x], x: x, y: y, act: '' }
 
         const minUtility = [currentAct]
-        if (cumUtilityMap[y][x - 1] != undefined)
+        if (cumUtilityMap[y][x - 1])
             minUtility.push({ utility: cumUtilityMap[y][x - 1], x: x - 1, y: y, act: 'walk_left' })
-        if (cumUtilityMap[y][x + 1] != undefined)
+        if (cumUtilityMap[y][x + 1])
             minUtility.push({ utility: cumUtilityMap[y][x + 1], x: x + 1, y: y, act: 'walk_right' })
-        if (cumUtilityMap[y - 1] != undefined)
+        if (cumUtilityMap[y - 1])
             minUtility.push({ utility: cumUtilityMap[y - 1][x], x: x, y: y - 1, act: 'walk_front' })
-        if (cumUtilityMap[y + 1] != undefined)
+        if (cumUtilityMap[y + 1])
             minUtility.push({ utility: cumUtilityMap[y + 1][x], x: x, y: y + 1, act: 'walk_back' })
 
         const nextAct = minUtility.reduce((a, b) => (a.utility < b.utility ? a : b))

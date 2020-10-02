@@ -1,11 +1,17 @@
 import phaser from 'phaser'
+// TODO: @types/bootstrap@5.0.0がリリースされたらはずす
+// @ts-ignore
+import { Modal } from 'bootstrap'
 import { createSpriteObject } from '../functions/GameObjectManager'
 import { outputGameLog, replaceText } from '../functions/Util'
 import { LoadScene } from './LoadScene'
 import { SpriteData, SpriteLayer, SpriteObject } from '../../../server/interfaces/presenters/types'
 import * as api from '../functions/Api'
+import { getUserSignUpModal, getEnterAsDefaultUserModal, getLoginModal, getOptionModal } from '../functions/Util'
 import { GameState } from '../../../server/interfaces/presenters/GameState'
 
+const modalElement: HTMLElement = document.getElementById('modal') as HTMLElement
+let enterTheWorldElement: HTMLElement
 export class MenuScene extends phaser.Scene {
     // ゲーム状態
     private gameState: GameState = GameState.instance
@@ -26,8 +32,10 @@ export class MenuScene extends phaser.Scene {
         console.log('init')
         const commonGameLog = api.gameLog.COMMON
         outputGameLog(commonGameLog.WELCOME)
-        const helloUser: string = replaceText(commonGameLog.HELLO_USER, api.sesUser.userName)
-        outputGameLog(helloUser)
+        if (api.sesUser.userName != '${initName}') {
+            const helloUser: string = replaceText(commonGameLog.HELLO_USER, api.sesUser.userName)
+            outputGameLog(helloUser)
+        }
         this.preload(true)
     }
 
@@ -109,6 +117,26 @@ export class MenuScene extends phaser.Scene {
         )
         optionsButton.setOrigin(0.5)
 
+        // 新規登録画面を表示
+        if (api.sesUser.userName === '${initName}') {
+            const userSignUpModalElement = getUserSignUpModal()
+            const userSignUpModal = new Modal(userSignUpModalElement, {
+                keyboard: false,
+                backdrop: 'static'
+            })
+            userSignUpModal.show()
+            const signUpElement = document.getElementById('sign-up') as HTMLElement
+            signUpElement.addEventListener('click', async () => {
+                const userName: string = (document.getElementById('user-name') as HTMLInputElement).value
+                const userLocation: string = (document.getElementById('user-location') as HTMLInputElement).value
+                const userLanguage: string = (document.getElementById('user-language') as HTMLInputElement).value
+                const updateProp = { userName: userName, location: userLocation, lang: userLanguage }
+                const retCode: number = await api.updateSesUser(updateProp)
+                if (retCode === 200) location.reload()
+            })
+            return
+        }
+
         // MENUspriteアニメーション表示
         const menuSpriteData: SpriteData = await api.getSpriteData()
         const menuAnimeCd: string = menuSpriteData[0][0].animeCd
@@ -119,10 +147,23 @@ export class MenuScene extends phaser.Scene {
         hoverSprite.setOrigin(0.5)
         hoverSprite.setVisible(false)
 
+        // 世界に入る
+        const enterTheWorld = (): void => {
+            this.gameState.scene = 'PLAY'
+            this.scene.add('LOAD', LoadScene, false)
+            this.scene.start('LOAD').stop('MENU')
+        }
+
+        // モーダルウインドウの表示が終わったら再度各ボタンをsetInteractiveする
+        modalElement.addEventListener('hidden.bs.modal', () => {
+            enterButton.setInteractive()
+            logInOutButton.setInteractive()
+            optionsButton.setInteractive()
+        })
+
         enterButton.setInteractive()
 
         enterButton.on('pointerover', () => {
-            console.log('hover')
             hoverSprite.setVisible(true)
             hoverSprite.play(menuAnimeCd + '_' + 'walk_back')
             hoverSprite.x = enterButton.x - enterButton.width
@@ -130,20 +171,29 @@ export class MenuScene extends phaser.Scene {
         })
 
         enterButton.on('pointerout', () => {
-            console.log('out')
             hoverSprite.setVisible(false)
         })
 
         enterButton.on('pointerup', () => {
-            this.gameState.scene = 'PLAY'
-            this.scene.add('LOAD', LoadScene, false)
-            this.scene.start('LOAD').stop('MENU')
+            if (api.sesUser.userId === 'default') {
+                enterButton.disableInteractive()
+                logInOutButton.disableInteractive()
+                optionsButton.disableInteractive()
+                const enterAsDefaultUserModalElement = getEnterAsDefaultUserModal()
+                const enterAsDefaultUserModal = new Modal(enterAsDefaultUserModalElement, { keyboard: false })
+                enterAsDefaultUserModal.show()
+                enterTheWorldElement = document.getElementById('enter-the-world') as HTMLElement
+                enterTheWorldElement.addEventListener('click', () => {
+                    modalElement.addEventListener('hidden.bs.modal', enterTheWorld)
+                })
+                return
+            }
+            enterTheWorld()
         })
 
         logInOutButton.setInteractive()
 
         logInOutButton.on('pointerover', () => {
-            console.log('hover')
             hoverSprite.setVisible(true)
             hoverSprite.play(menuAnimeCd + '_' + 'walk_back')
             hoverSprite.x = logInOutButton.x - logInOutButton.width
@@ -151,19 +201,26 @@ export class MenuScene extends phaser.Scene {
         })
 
         logInOutButton.on('pointerout', () => {
-            console.log('out')
             hoverSprite.setVisible(false)
         })
 
         logInOutButton.on('pointerup', () => {
-            console.log('open')
-            location.href = api.sesUser.userId === 'default' ? './auth/twitter' : './auth/logout'
+            if (api.sesUser.userId === 'default') {
+                // モーダルウインドウが表示されているときも各ボタンが反応してしまうのでdisableする。
+                enterButton.disableInteractive()
+                logInOutButton.disableInteractive()
+                optionsButton.disableInteractive()
+                const loginModalElement = getLoginModal()
+                const loginModal = new Modal(loginModalElement, { keyboard: false })
+                loginModal.show()
+                return
+            }
+            location.href = './auth/logout'
         })
 
         optionsButton.setInteractive()
 
         optionsButton.on('pointerover', () => {
-            console.log('hover')
             hoverSprite.setVisible(true)
             hoverSprite.play(menuAnimeCd + '_' + 'walk_back')
             hoverSprite.x = optionsButton.x - optionsButton.width
@@ -171,12 +228,17 @@ export class MenuScene extends phaser.Scene {
         })
 
         optionsButton.on('pointerout', () => {
-            console.log('out')
             hoverSprite.setVisible(false)
         })
 
         optionsButton.on('pointerup', () => {
-            console.log('open')
+            enterButton.disableInteractive()
+            logInOutButton.disableInteractive()
+            optionsButton.disableInteractive()
+            const optionModalElement = getOptionModal()
+            const optionModal = new Modal(optionModalElement, { keyboard: false })
+            optionModal.show()
+            return
         })
     }
 }

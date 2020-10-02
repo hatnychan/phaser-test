@@ -2,3 +2,5 @@ node_modules/
 .DS_Store
 ._*
 phaser/dist/main.js
+phaser/dist/style.css
+phaser/dist/webfonts

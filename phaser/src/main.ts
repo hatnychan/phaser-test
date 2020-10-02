@@ -1,3 +1,8 @@
+// BootstrapのJavaScript側の機能を読み込む
+import 'bootstrap'
+// スタイルシートを読み込む
+import './style.scss'
+
 import phaser from 'phaser'
 import * as api from './functions/Api'
 import { LoadScene } from './scenes/LoadScene'
@@ -20,8 +25,6 @@ const gameStart = async (): Promise<void> => {
 
     // シーン描画 ここに必要なものを追加しないとthis.physicsなどが使えない
     new phaser.Game({
-        width: width,
-        height: height,
         scene: [LoadScene, MenuScene, PlayScene],
         type: phaser.CANVAS, // これを追加しないとcanvas要素に描画できない
         canvas: canvas,
@@ -35,8 +38,10 @@ const gameStart = async (): Promise<void> => {
             }
         },
         scale: {
-            //mode: phaser.Scale.FIT,
-            //autoCenter: phaser.Scale.CENTER_HORIZONTALLY
+            mode: phaser.Scale.FIT,
+            parent: 'game-screen',
+            width: width,
+            height: height
         }
     })
 }

@@ -3,105 +3,32 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css"
-        integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
-    <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="style.css" />
     <title></title>
 </head>
 
 <body>
     <div id="game-container">
-        <div id="game-screen"></div>
-        <div id="game-log"></div>
+        <main id="game-screen"></main>
+        <aside id="game-log" class="game-log"></aside>
     </div>
 
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-        Launch demo modal
-    </button>
-
-    <div id="announce">
+    <div id="game-info">
         2020/YY/YY v0.02にアップデート<br>
         2020/XX/XX サービス開始
     </div>
 
-    <!-- Modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+    <!-- modal -->
+    <div id='modal' class="modal fade" tabindex="-1" aria-labelledby="modalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
-                <div class="modal-body">
-                    <i class="fab fa-twitter">aaa</i>
-                    <i class="fab fa-google">bbb</i>
-                    <i class="fab fa-facebook">ccc</i>
-
-
-                </div>
             </div>
         </div>
     </div>
+    <!-- modal -->
 
     <script src="main.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/js/bootstrap.min.js"
-        integrity="sha384-oesi62hOLfzrys4LxRF63OJCXdXDipiYWBnvTl9Y9/TRlw5xlKIEHpNyvvDShgf/"
-        crossorigin="anonymous"></script>
 </body>
-
-<style>
-    * {
-        overflow: hidden;
-        padding: 0;
-        margin: 0;
-    }
-
-    html,
-    body {
-        height: 100%;
-        width: 100%;
-        margin: 0;
-    }
-
-    #game-container {
-        display: flex;
-        /* #announceのheight15%に合わせている */
-        height: 85%;
-        width: 100%;
-        justify-content: center;
-        align-items: center;
-        background-color: #002b36;
-    }
-
-    #game-screen {
-        /* #game-logのwidth15%に合わせている */
-        margin-left: 15%;
-        height: 600px;
-        width: 800px;
-    }
-
-    #game-log {
-        /*必要に応じてスクロールバーを表示させる*/
-        overflow: auto;
-        width: 15%;
-        height: 600px;
-        border: 4px dotted #668891;
-        /* 要素サイズは変わらず、枠線分だけ要素が縮む */
-        box-sizing: border-box;
-        color: #859900;
-        background-color: #073642;
-    }
-
-    #announce {
-        text-align: center;
-        overflow: auto;
-        height: 15%;
-        border: 4px dotted #668891;
-        box-sizing: border-box;
-        color: #859900;
-        background-color: #073642;
-    }
-</style>
 
 </html>

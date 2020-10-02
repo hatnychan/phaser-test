@@ -23,16 +23,26 @@ router.get('/param', async (req: express.Request, res: express.Response) => {
 router.post('/gameLog', async (req: express.Request, res: express.Response) => {
     // TODO 変なデータ要求されないようにユーザーごとに参照権限を設定した方が良いかな。
     const cond = req.body
-    if (req.user != undefined) cond['lang'] = (req.user as User).lang
-    else cond['lang'] = (await userController.findUser({ userId: 'default' }))[0].lang
+    if (req.user) cond['lang'] = (req.user as User).lang
+    else cond['lang'] = ((await userController.findOneUser({ userId: 'default' })) as User).lang
     const gameLog: SerializedGameLog = await gameLogController.findGameLog(cond)
     const resData: SerializedGameLog = gameLog
     res.json(resData)
 })
 
-router.get('/sessionUser', async (req: express.Request, res: express.Response) => {
-    const resData: User = !req.user ? (await userController.findUser({ userId: 'default' }))[0] : (req.user as User)
+router.get('/sesUser', async (req: express.Request, res: express.Response) => {
+    const resData: User = !req.user
+        ? ((await userController.findOneUser({ userId: 'default' })) as User)
+        : (req.user as User)
     res.json(resData)
+})
+
+router.post('/updateSesUser', async (req: express.Request, res: express.Response) => {
+    // TODO: サーバー側にもバリデーションチェック入れる
+    const sesUser: User = req.user as User
+    const updateProp: { [x: string]: string } = req.body
+    await userController.updateUser({ userId: sesUser.userId }, updateProp)
+    res.sendStatus(200)
 })
 
 export default router

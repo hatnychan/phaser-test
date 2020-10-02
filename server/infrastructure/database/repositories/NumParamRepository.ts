@@ -7,7 +7,7 @@ export class NumParamRepository extends INumParamRepository {
     private repository!: Repository<NumParam>
 
     private setRepository(): void {
-        if (this.repository === undefined) this.repository = getRepository(NumParamEntity)
+        if (!this.repository) this.repository = getRepository(NumParamEntity)
     }
 
     async findAll(): Promise<NumParam[]> {

@@ -94,12 +94,13 @@ export const createSpriteObject = async (
     const spriteData: SpriteData = await api.getSpriteData()
     const spriteConfig: SpriteTextureConfig[] = spriteData[0]
     const spritePos: SpriteActConfig[] = spriteData[1]
-    const baseTileMap: phaser.Tilemaps.DynamicTilemapLayer | undefined =
-        tileMapLayer != undefined ? Array.from(tileMapLayer.values())[0] : undefined
+    const baseTileMap: phaser.Tilemaps.DynamicTilemapLayer | undefined = tileMapLayer
+        ? Array.from(tileMapLayer.values())[0]
+        : undefined
 
     spritePos.map(sprite => {
         let spritePos: phaser.Math.Vector2
-        if (baseTileMap != undefined) {
+        if (baseTileMap) {
             spritePos = baseTileMap.tileToWorldXY(sprite.initX, sprite.initY)
         } else {
             spritePos = new phaser.Math.Vector2(sprite.initX, sprite.initY)
@@ -199,7 +200,7 @@ export const setCollisonMapEvent = (
 
 // 天気によってタイルの状態を変更する。
 export const updateWeatherSituation = (weatherLayer?: phaser.Tilemaps.DynamicTilemapLayer): void => {
-    if (weatherLayer === undefined) return
+    if (!weatherLayer) return
     const commonGameLog = api.gameLog.COMMON
     const gameState: GameState = GameState.instance
     if (gameState.weather === 'cloudy') {

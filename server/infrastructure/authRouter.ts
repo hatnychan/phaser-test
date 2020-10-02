@@ -45,16 +45,15 @@ passport.serializeUser((accessToken, done) => {
 
 passport.deserializeUser(async (sesUser: { accessToken: string }, done) => {
     const userId: string = sesUser.accessToken
-    const userArray: User[] = await userController.findUser({ userId: userId })
-    let user: User
-    if (userArray.length === 0) {
-        user = new User()
-        user.userId = userId
-        user.userName = '${initName}'
-        user.location = '${initLocation}'
-        await userController.createUser(user)
-    } else {
-        user = userArray[0]
+    let user: User | undefined = await userController.findOneUser({ userId: userId })
+    if (!user) {
+        const newUser: User = new User()
+        newUser.userId = userId
+        newUser.userName = '${initName}'
+        newUser.location = 'TOKYO'
+        newUser.lang = 'ja'
+        await userController.insertUser(newUser)
+        user = newUser
     }
     done(null, user)
 })

@@ -1,15 +1,14 @@
-import User from '../../domain/models/User'
 import IUserRepository from '../repositories/IUserRepository'
 
-export class CreateUser {
+export class UpdateUser {
     private UserRepository: IUserRepository
 
     constructor(UserRepository: IUserRepository) {
         this.UserRepository = UserRepository
     }
 
-    async execute(user: User): Promise<void> {
-        await this.UserRepository.create(user)
+    async execute(cond: { userId: string }, updateProp: { [x: string]: string }): Promise<void> {
+        await this.UserRepository.update(cond, updateProp)
     }
 }
-export default CreateUser
+export default UpdateUser

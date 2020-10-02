@@ -13,7 +13,7 @@ export class GameLogRepository extends IGameLogRepository {
     時間あればもっと良い方法を模索したい。
     */
     private setRepository(): void {
-        if (this.repository === undefined) this.repository = getRepository(GameLogEntity)
+        if (!this.repository) this.repository = getRepository(GameLogEntity)
     }
 
     async find(cond: { [x: string]: string }): Promise<GameLog[]> {

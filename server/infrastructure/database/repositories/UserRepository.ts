@@ -7,21 +7,26 @@ export class UserRepository extends IUserRepository {
     private repository!: Repository<User>
 
     private setRepository(): void {
-        if (this.repository === undefined) this.repository = getRepository(UserEntity)
+        if (!this.repository) this.repository = getRepository(UserEntity)
     }
 
-    async find(cond: { [x: string]: string }): Promise<User[]> {
+    async findOne(cond: { userId: string }): Promise<User | undefined> {
         this.setRepository()
-        const results: User[] = await this.repository.find({
-            where: cond,
-            cache: true
+        const result: User | undefined = await this.repository.findOne({
+            where: cond
+            // cache: true
         })
-        return results
+        return result
     }
 
-    async create(user: User): Promise<void> {
+    async insert(user: User): Promise<void> {
         this.setRepository()
-        this.repository.save(user)
+        this.repository.insert(user)
+    }
+
+    async update(cond: { userId: string }, updateProp: { [x: string]: string }): Promise<void> {
+        this.setRepository()
+        this.repository.update(cond, updateProp)
     }
 }
 export default UserRepository
