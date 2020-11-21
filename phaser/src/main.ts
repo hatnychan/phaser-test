@@ -9,9 +9,27 @@ import { LoadScene } from './scenes/LoadScene'
 import { MenuScene } from './scenes/MenuScene'
 import { PlayScene } from './scenes/PlayScene'
 
+//空のcanvas要素作成
 const canvas = document.createElement('canvas')
 const gameContainer = document.getElementById('game-screen')
 gameContainer?.appendChild(canvas)
+
+// クリック時の演出
+const body: HTMLElement = document.body as HTMLElement
+body.addEventListener('click', e => {
+    body.insertAdjacentHTML('afterbegin', '<a href="#" id="click-effect" class="ripple"></a>')
+    const clickEffect: HTMLElement = document.getElementById('click-effect') as HTMLElement
+    const clickEffectCss: CSSStyleDeclaration = getComputedStyle(clickEffect, null)
+    const clickEffectW = Number(clickEffectCss.getPropertyValue('width').replace('px', ''))
+    const clickEffectH = Number(clickEffectCss.getPropertyValue('height').replace('px', ''))
+    clickEffect.style.left = e.pageX - clickEffectW / 2 + 'px'
+    clickEffect.style.top = e.pageY - clickEffectH / 2 + 'px'
+
+    const clickEffectDur = Number(clickEffectCss.getPropertyValue('animation-duration').replace('s', ''))
+    setTimeout(() => {
+        clickEffect.remove()
+    }, clickEffectDur * 1000)
+})
 
 const gameStart = async (): Promise<void> => {
     // 初期データ取得
